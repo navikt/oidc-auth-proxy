@@ -8,7 +8,8 @@
   "author": "NAV",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "helmet": "^3.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",

@@ -11,6 +11,7 @@
     "express": "^4.16.4",
     "helmet": "^3.16.0",
     "openid-client": "^2.4.5",
+    "passport": "^0.4.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },

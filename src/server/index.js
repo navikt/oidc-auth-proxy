@@ -1,19 +1,16 @@
 import express from 'express';
-import passport from 'passport';
-import { Strategy } from 'openid-client';
 import helmet from 'helmet';
 import cors from './cors/cors';
-import routes from './routes/routes';
+import getRoutes from './routes/routes';
 
-export default (issuer) => {
+export default (client) => {
     const server = express();
 
-    passport.use('oidc', new Strategy({}))
+    console.log('Auth url', client.authorizationUrl({}));
 
     server.use(helmet());
     server.use(cors);
-    server.use(routes);
-    server.use(passport.initialize());
+    server.use((req, res, next) => getRoutes(req, res, next, client));
 
     const port = process.env.PORT || 1337;
     server.listen(port, () => {

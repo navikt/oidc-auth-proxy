@@ -1,22 +1,25 @@
 import { Router } from 'express';
 import {isAuthenticated} from '../utils/utils';
 
-const routes = Router();
+const getRoutes = (req, res, next, { authorizationUrl }) => {
+    const router = Router();
 
-routes.get('/login', (req, res) => {
-    res.send('Hello World!');
-});
+    router.get('/api/*', (req, res) => {
+        if (!isAuthenticated()) {
+            res.redirect(authorizationUrl({}))
+        }
+    });
 
-routes.get('/api/*', (req, res) => {
-    if (isAuthenticated()) {
-        res.redirect()
-        console.log(req.headers);
-        res.send('Hello World');
-    }
-});
+    router.post('/callback', (req, res) => {
+        res.redirect(process.env.REDIRECT_URL_ON_SUCCESS);
+    });
 
-routes.post('/callback', (req, res) => {
-    res.redirect(process.env.REDIRECT_URL_ON_SUCCESS);
-});
+    router.get('/whatever', () => {
+        res.send('Hello')
+    });
 
-export default routes;
+    next();
+};
+
+export default getRoutes;
+

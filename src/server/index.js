@@ -1,16 +1,14 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from './cors/cors';
-import getRoutes from './routes/routes';
+import configRoutes from './routes/routes';
 
-export default (client) => {
+export default (authClient) => {
     const server = express();
-
-    console.log('Auth url', client.authorizationUrl({}));
 
     server.use(helmet());
     server.use(cors);
-    server.use((req, res, next) => getRoutes(req, res, next, client));
+    configRoutes(server, authClient);
 
     const port = process.env.PORT || 1337;
     server.listen(port, () => {

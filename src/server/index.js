@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import cors from './cors/cors';
 import configRoutes from './routes/routes';
 
-export default (authClient) => {
+export default authClient => {
     const server = express();
 
     server.use(helmet());
@@ -12,6 +12,6 @@ export default (authClient) => {
 
     const port = process.env.PORT || 1337;
     server.listen(port, () => {
-        console.log(`Listening on port ${port}`)
+        console.log(`Listening on port ${port}`);
     });
-}
+};

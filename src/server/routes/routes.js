@@ -1,48 +1,32 @@
-import { isAuthenticated } from '../utils/utils';
+import { isAuthenticated } from '../utils/auth';
 
 const configRoutes = (app, authClient) => {
     app.get('/api/*', (req, res) => {
-        if (!isAuthenticated()) {
-            res.redirect(
-                `${authClient.authorizationUrl({
-                    response_mode: 'form_post',
-                    scope: 'openid offline_access'
-                })}`
-            );
+        if (!isAuthenticated(req.session.tokenSets)) {
+            req.session.requestedPath = req.path;
+            const authorizationUrl = authClient.authorizationUrl({
+                response_mode: 'form_post',
+                scope: `openid offline_access ${process.env.CLIENT_ID}/.default`
+            });
+            res.redirect(authorizationUrl);
+        } else {
+            res.send('Hei på deg!');
         }
     });
 
     app.post('/callback', (req, res) => {
         const authorizationCode = req.query.code;
         const params = authClient.callbackParams(req);
-        console.log(params);
         authClient
-            .callback(
-                'http://localhost:8080/callback',
-                params,
-                {
-                    code_verifier: authorizationCode
-                },
-                {
-                    clientAssertionPayload: {
-                        iss: process.env.CLIENT_ID
-                    }
-                }
-            )
+            .callback(process.env.REDIRECT_URL, params, {
+                code_verifier: authorizationCode
+            })
             .then(
                 tokenSet => {
-                    console.log(tokenSet);
-                    authClient
-                        .refresh(tokenSet, {
-                            exchangeBody: {
-                                scope:
-                                    '4bd971d8-2469-434f-9322-8cfe7a7a3379/.default'
-                            }
-                        })
-                        .then(
-                            tokenSet2 => console.log(tokenSet2),
-                            error => console.error(error)
-                        );
+                    req.session.tokenSets = {
+                        [process.env.CLIENT_ID]: tokenSet
+                    };
+                    res.redirect(req.session.requestedPath);
                 },
                 error => {
                     console.error(error);
@@ -50,9 +34,7 @@ const configRoutes = (app, authClient) => {
             );
     });
 
-    app.get('/hello', (req, res) => {
-        res.send('Hello');
-    });
+    app.get('/resource', (req, res) => res.send('Got resource'));
 };
 
 export default configRoutes;

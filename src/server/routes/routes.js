@@ -1,22 +1,40 @@
-import { Router } from 'express';
-import {isAuthenticated} from '../utils/utils';
+import { isAuthenticated } from '../utils/auth';
 
-const routes = Router();
+const configRoutes = (app, authClient) => {
+    app.get('/api/*', (req, res) => {
+        if (!isAuthenticated(req.session.tokenSets)) {
+            req.session.requestedPath = req.path;
+            const authorizationUrl = authClient.authorizationUrl({
+                response_mode: 'form_post',
+                scope: `openid offline_access ${process.env.CLIENT_ID}/.default`
+            });
+            res.redirect(authorizationUrl);
+        } else {
+            res.send('Hei på deg!');
+        }
+    });
 
-routes.get('/login', (req, res) => {
-    res.send('Hello World!');
-});
+    app.post('/callback', (req, res) => {
+        const authorizationCode = req.query.code;
+        const params = authClient.callbackParams(req);
+        authClient
+            .callback(process.env.REDIRECT_URL, params, {
+                code_verifier: authorizationCode
+            })
+            .then(
+                tokenSet => {
+                    req.session.tokenSets = {
+                        [process.env.CLIENT_ID]: tokenSet
+                    };
+                    res.redirect(req.session.requestedPath);
+                },
+                error => {
+                    console.error(error);
+                }
+            );
+    });
 
-routes.get('/api/*', (req, res) => {
-    if (isAuthenticated()) {
-        res.redirect()
-        console.log(req.headers);
-        res.send('Hello World');
-    }
-});
+    app.get('/resource', (req, res) => res.send('Got resource'));
+};
 
-routes.post('/callback', (req, res) => {
-    res.redirect(process.env.REDIRECT_URL_ON_SUCCESS);
-});
-
-export default routes;
+export default configRoutes;

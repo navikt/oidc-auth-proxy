@@ -1,9 +1,8 @@
 import { isAuthenticated } from '../utils/auth';
 
 const configRoutes = (app, authClient) => {
-    app.get('/api/*', (req, res) => {
+    app.get(`/login`, (req, res) => {
         if (!isAuthenticated(req.session.tokenSets)) {
-            req.session.requestedPath = req.path;
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
                 scope: `openid offline_access ${process.env.CLIENT_ID}/.default`
@@ -33,8 +32,6 @@ const configRoutes = (app, authClient) => {
                 }
             );
     });
-
-    app.get('/resource', (req, res) => res.send('Got resource'));
 };
 
 export default configRoutes;

@@ -1,4 +1,4 @@
-import { getTokenOnBehalfOf } from './auth';
+import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 
 const getProxyConfig = () => {
     try {
@@ -13,6 +13,15 @@ export const getProxyPrefix = () => getProxyConfig().prefix;
 export const getProxyApis = () => getProxyConfig().apis;
 
 export const getProxyOptions = (api, authClient) => ({
+    filter: (request, response) => {
+        const authenticated = isAuthenticated(request.session.tokenSets, process.env.CLIENT_ID);
+        if (!authenticated) {
+            request.session.requestedPath = request.originalUrl;
+            console.log('test', request.session.requestedPath);
+            response.redirect('/login');
+        }
+        return authenticated;
+    },
     proxyReqOptDecorator: (requestOptions, request) =>
         new Promise((resolve, reject) => {
             getTokenOnBehalfOf(authClient, api.clientId, request).then(

@@ -16,11 +16,11 @@ export default authClient => {
     server.use(session({ secret: 'awesome secret' }));
 
     getProxyApis().forEach(api =>
-        server.use(`${getProxyPrefix()}/${api.path}`, proxy(api.url, getProxyOptions(api, authClient)))
+        server.use(`${getProxyPrefix()}/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
     );
     configRoutes(server, authClient);
 
-    const port = process.env.PORT || 1337;
+    const port = process.env.PORT || 8080;
     server.listen(port, () => {
         console.log(`Listening on port ${port}`);
     });

@@ -6,10 +6,7 @@ const getTokenSetsFromRequest = request => {
     }
 };
 
-export const isAuthenticated = (
-    tokenSets,
-    clientId = process.env.CLIENT_ID
-) => {
+export const isAuthenticated = (tokenSets, clientId = process.env.CLIENT_ID) => {
     if (tokenSets === undefined) {
         return false;
     }
@@ -28,8 +25,7 @@ export async function getTokenOnBehalfOf(authClient, clientId, request) {
         try {
             const onBehalfTokenSet = await authClient.grant({
                 grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                client_assertion_type:
-                    'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+                client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
                 requested_token_use: 'on_behalf_of',
                 scope: `${clientId}/.default`,
                 assertion: tokenSets[process.env.CLIENT_ID].access_token

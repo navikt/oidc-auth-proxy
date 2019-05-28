@@ -2,8 +2,10 @@ import express from 'express';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import proxy from 'express-http-proxy';
 import cors from './cors/cors';
 import configRoutes from './routes/routes';
+import { getProxyApis, getProxyPrefix, getProxyOptions } from './utils/proxy';
 
 export default authClient => {
     const server = express();
@@ -12,6 +14,10 @@ export default authClient => {
     server.use(cors);
     server.use(bodyParser.urlencoded());
     server.use(session({ secret: 'awesome secret' }));
+
+    getProxyApis().forEach(api =>
+        server.use(`${getProxyPrefix()}/${api.path}`, proxy(api.url, getProxyOptions(api, authClient)))
+    );
     configRoutes(server, authClient);
 
     const port = process.env.PORT || 1337;

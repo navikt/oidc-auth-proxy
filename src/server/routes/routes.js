@@ -1,11 +1,11 @@
 import { isAuthenticated } from '../utils/auth';
 
 const configRoutes = (app, authClient) => {
-    app.get(`/login`, (req, res) => {
+    app.get('/login', (req, res) => {
         if (!isAuthenticated(req.session.tokenSets)) {
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
-                scope: `openid offline_access ${process.env.CLIENT_ID}/.default`
+                scope: `openid ${process.env.CLIENT_ID}/.default`
             });
             res.redirect(authorizationUrl);
         } else {
@@ -25,7 +25,7 @@ const configRoutes = (app, authClient) => {
                     req.session.tokenSets = {
                         [process.env.CLIENT_ID]: tokenSet
                     };
-                    res.redirect(req.session.requestedPath);
+                    res.redirect(req.session.referer);
                 },
                 error => {
                     console.error(error);

@@ -16,9 +16,13 @@ export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
         const authenticated = isAuthenticated(request.session.tokenSets, process.env.CLIENT_ID);
         if (!authenticated) {
-            request.session.requestedPath = request.originalUrl;
-            console.log('test', request.session.requestedPath);
-            response.redirect('/login');
+            const authorizationUrl = authClient.authorizationUrl({
+                response_mode: 'form_post',
+                scope: `openid ${process.env.CLIENT_ID}/.default`
+            });
+            request.session.referer = request.headers.referer;
+            response.header('Location', authorizationUrl);
+            response.sendStatus(401);
         }
         return authenticated;
     },
@@ -26,10 +30,13 @@ export const getProxyOptions = (api, authClient) => ({
         new Promise((resolve, reject) => {
             getTokenOnBehalfOf(authClient, api.clientId, request).then(
                 ({ access_token }) => {
-                    requestOptions.headers.Authorization = access_token;
+                    requestOptions.headers.Authorization = `Bearer ${access_token}`;
                     resolve(requestOptions);
                 },
                 error => reject(error)
             );
-        })
+        }),
+    proxyReqPathResolver: function(req) {
+        return '/isready';
+    }
 });

@@ -18,9 +18,9 @@ export const getProxyOptions = (api, authClient) => ({
         if (!authenticated) {
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
-                scope: `openid ${process.env.CLIENT_ID}/.default`,
-                state: request.headers.referer
+                scope: `openid ${process.env.CLIENT_ID}/.default`
             });
+            request.session.referer = request.headers.referer;
             response.header('Location', authorizationUrl);
             response.sendStatus(401);
         }

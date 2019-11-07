@@ -35,8 +35,5 @@ export const getProxyOptions = (api, authClient) => ({
                 },
                 error => reject(error)
             );
-        }),
-    proxyReqPathResolver: function(req) {
-        return '/isready';
-    }
+        })
 });

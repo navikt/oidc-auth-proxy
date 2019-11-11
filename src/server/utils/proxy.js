@@ -27,5 +27,10 @@ export const getProxyOptions = (api, authClient) => ({
                 },
                 error => reject(error)
             );
-        })
+        }),
+    proxyReqPathResolver: function(request) {
+        const path = request.params[0];
+        const queryString = request.url.split('?')[1];
+        return path + (queryString ? '?' + queryString : '');
+    }
 });

@@ -41,7 +41,6 @@ npm start
 ```
 
 ## Todo
-[ ] White liste før vi redirecter tilbake til referer
 [ ] Redis cache
+[ ] Babel bygg & startup
 [ ] Bygge docker image
-[ ] Riktig path det forwardes til?

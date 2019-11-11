@@ -1,14 +1,17 @@
-const environmentVariable = (name) => {
+const environmentVariable = (name, secret = false) => {
     if (!process.env[name]) {
         console.error(`Mangler environment variable '${name}'.`);
         process.exit(1);
     }
+    if (!secret) {
+        console.log(`Env[${name}]=${process.env[name]}`);
+    }
     return process.env[name]
 };
 
-const environmentVariableAsJson = (name) => {
+const environmentVariableAsJson = (name, secret = false) => {
     try {
-        return JSON.parse(environmentVariable(name));
+        return JSON.parse(environmentVariable(name, secret));
     } catch (error) {
         console.error(`Environment variable '${name}' er ikke et gyldig JSON-objekt.`, error);
         process.exit(1);
@@ -16,7 +19,7 @@ const environmentVariableAsJson = (name) => {
 };
 
 export const getJwks = () => {
-    var jwk = environmentVariableAsJson("JWK");
+    var jwk = environmentVariableAsJson("JWK", true);
     if (!jwk.kid) {
         console.error(`Environment variable 'JWK' mangler 'kid' claim.`);
         process.exit(1);
@@ -53,5 +56,4 @@ export const getClientId = () => environmentVariable("CLIENT_ID");
 export const getLoginScopes = () => environmentVariable("LOGIN_SCOPES");
 export const getDiscoveryUrl = () => environmentVariable("DISCOVERY_URL");
 export const getOidcAuthProxyBaseUrl = () => environmentVariable("OIDC_AUTH_PROXY_BASE_URL");
-export const getOidcAuthProxyCallbackPath = () => environmentVariable("OIDC_AUTH_PROXY_CALLBACK_PATH");
 export const getApplicationBaseUrl = () => environmentVariable("APPLICATION_BASE_URL");

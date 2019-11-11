@@ -1,21 +1,19 @@
 import { getApplicationBaseUrl } from "./config";
 
 const applicationBaseUrl = getApplicationBaseUrl();
-const fallback = `${applicationBaseUrl}?login_redirect=stopped`;
+const loginRedirectStopped = `${applicationBaseUrl}?error=login_redirect_stopped`;
 
-export const getRefererFromRequest = ({request}) => {
-    if (request.headers.referer && request.headers.referer.startsWith(applicationBaseUrl)) {
-        return request.headers.referer;
+const handleReferer = referer => {
+    if (!referer) {
+        return applicationBaseUrl;
+    } else if (referer && referer.startsWith(applicationBaseUrl)) {
+        return referer;
     } else {
-        return fallback;
+        console.warn(`Ikke white listed referer '${referer}'. Redirecter til '${loginRedirectStopped}'`);
+        return loginRedirectStopped;
     }
 }
 
-export const getRefererFromSession = ({request}) => {
-    if (request.session.referer && request.session.referer.startsWith(applicationBaseUrl)) {
-        return request.session.referer;
-    } else {
-        return fallback;
-    }
-}
+export const getRefererFromRequest = ({request}) => handleReferer(request.headers.referer);
+export const getRefererFromSession = ({request}) => handleReferer(request.session.referer);
 

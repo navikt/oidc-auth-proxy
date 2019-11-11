@@ -5,8 +5,6 @@ const callbackPath = getOidcAuthProxyCallbackPath();
 const callbackUrl = `${getOidcAuthProxyBaseUrl()}${callbackPath}`;
 const self = "self"
 
-console.log(callbackUrl);
-
 const callbackRoutes = (app, authClient) => {
     app.post(callbackPath, (req, res) => {
         const authorizationCode = req.query.code;
@@ -20,7 +18,6 @@ const callbackRoutes = (app, authClient) => {
                     req.session.tokenSets = {
                         [self]: tokenSet
                     };
-                    console.log(tokenSet);
                     res.redirect(getRefererFromSession({request: req}));
                 },
                 error => {

@@ -53,4 +53,5 @@ export const getClientId = () => environmentVariable("CLIENT_ID");
 export const getLoginScopes = () => environmentVariable("LOGIN_SCOPES");
 export const getDiscoveryUrl = () => environmentVariable("DISCOVERY_URL");
 export const getOidcAuthProxyBaseUrl = () => environmentVariable("OIDC_AUTH_PROXY_BASE_URL");
+export const getOidcAuthProxyCallbackPath = () => environmentVariable("OIDC_AUTH_PROXY_CALLBACK_PATH");
 export const getApplicationBaseUrl = () => environmentVariable("APPLICATION_BASE_URL");

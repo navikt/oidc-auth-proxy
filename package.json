@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon --exec babel-node src/startup.js",
+    "build": "babel src -d dist",
+    "start": "node dist/startup.js",
+    "start-dev": "nodemon --exec babel-node src/startup.js",
     "start-dummy": "nodemon --exec babel-node ./dummy-server.js"
   },
   "author": "NAV",
@@ -22,6 +24,7 @@
     "request-promise": "^4.2.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
     "@babel/node": "^7.7.0",
     "@babel/preset-env": "^7.7.1",

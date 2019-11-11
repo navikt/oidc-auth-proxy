@@ -4,9 +4,10 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import proxy from 'express-http-proxy';
 import cors from './cors/cors';
-import configRoutes from './routes/routes';
+import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
 import { getProxyConfig } from './utils/config';
+import k8sRoutes from './routes/k8s';
 
 export default authClient => {
     const server = express();
@@ -19,12 +20,9 @@ export default authClient => {
     getProxyConfig().apis.forEach(api =>
         server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
     );
-
-    configRoutes(server, authClient);
-
-
-    server.get('/isready', function ({res}) {res.send('READY!')});
-    server.get('/isalive', function ({res}) {res.send('ALIVE!')});
+    
+    callbackRoutes(server, authClient);
+    k8sRoutes(server);
 
     const port = process.env.PORT || 8080;
     server.listen(port, () => {

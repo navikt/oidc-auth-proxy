@@ -6,7 +6,7 @@ function callbackUrl() {
     return `http://localhost:8080${path}`
 }
 
-const configRoutes = (app, authClient) => {
+const callbackRoutes = (app, authClient) => {
     app.post(path, (req, res) => {
         const authorizationCode = req.query.code;
         const params = authClient.callbackParams(req);
@@ -29,4 +29,4 @@ const configRoutes = (app, authClient) => {
     });
 };
 
-export default configRoutes;
+export default callbackRoutes;

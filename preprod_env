@@ -7,5 +7,5 @@ export PROXY_CONFIG='{
         "path": "local",
         "url": "http://localhost:8080",
         "scopes": "EN_ANNEN_CLIENT_ID/.default"
-    }
+    }]
 }'

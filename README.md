@@ -19,9 +19,7 @@ OIDC Client Private key på JWK format. Må inneholde kid claim som inneholder t
 ### DISCOVERY_URL
 OIDC Discovery URL for OIDC Provider.
 ### OIDC_AUTH_PROXY_BASE_URL
-Base URL'en din instans av OIDC auth proxy. Dette vil bla.a. brukes som grunnlag til callback URL ved innlogging og vil være base url + `OIDC_AUTH_PROXY_CALLBACK_PATH` som må white listes hos OIDC provider som en gyldig callback URL.
-### OIDC_AUTH_PROXY_CALLBACK_PATH
-Path på applikasjonen som tar imot callbacks etter innlogging.
+Base URL'en din instans av OIDC auth proxy. Dette vil bla.a. brukes som grunnlag til callback URL ved innlogging og vil være base url + `/oidc/callback` som må white listes hos OIDC provider som en gyldig callback URL.
 ### APPLICATION_BASE_URL
 Base URL'en til din applikasjon som dette benyttes som proxy for. Denne bruke bla.a. til white listing av URL'er proxyen redirecter tilbake til etter innlogging. Om det er en adresse under denne url'en er det OK, ellers redirectes man default rett til base url'en.
 ### LOGIN_SCOPES

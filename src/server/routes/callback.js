@@ -1,5 +1,5 @@
 import { getRefererFromSession } from "../utils/referer";
-import { getOidcAuthProxyCallbackPath, getOidcAuthProxyBaseUrl } from "../utils/config";
+import { getOidcAuthProxyBaseUrl } from "../utils/config";
 
 const callbackPath = "/oidc/callback";
 const callbackUrl = `${getOidcAuthProxyBaseUrl()}${callbackPath}`;

@@ -22,7 +22,7 @@ export const getProxyOptions = (api, authClient) => ({
         new Promise((resolve, reject) => {
             getTokenOnBehalfOf({authClient, api, request}).then(
                 ({ token_type, access_token }) => {
-                    requestOptions.headers.Authorization = `${token_type} ${access_token}`;
+                    requestOptions.headers['Authorization'] = `${token_type} ${access_token}`;
                     resolve(requestOptions);
                 },
                 error => reject(error)

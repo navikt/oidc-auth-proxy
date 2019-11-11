@@ -1,17 +1,26 @@
+import { getRefererFromSession } from "../utils/referer";
+
+const path = '/api/oidc/callback'
+
+function callbackUrl() {
+    return `http://localhost:8080${path}`
+}
+
 const configRoutes = (app, authClient) => {
-    app.post('/callback', (req, res) => {
+    app.post(path, (req, res) => {
         const authorizationCode = req.query.code;
         const params = authClient.callbackParams(req);
         authClient
-            .callback(process.env.REDIRECT_URL, params, {
+            .callback(callbackUrl(), params, {
                 code_verifier: authorizationCode
             })
             .then(
                 tokenSet => {
                     req.session.tokenSets = {
-                        [process.env.CLIENT_ID]: tokenSet
+                        ["self"]: tokenSet
                     };
-                    res.redirect(req.session.referer);
+                    console.log(tokenSet);
+                    res.redirect(getRefererFromSession({request: req}));
                 },
                 error => {
                     console.error(error);

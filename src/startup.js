@@ -1,15 +1,11 @@
-import dotenv from 'dotenv';
 import { Issuer } from 'openid-client';
 import startServer from './server';
 import { buildClient } from './server/utils/client';
-
-dotenv.config();
+import { getDiscoveryUrl } from './server/utils/config';
 
 async function startApp() {
     try {
-        const issuer = await Issuer.discover(
-            process.env.OPENID_CONFIGURATION_URL
-        );
+        const issuer = await Issuer.discover(getDiscoveryUrl());
         const client = buildClient(issuer);
         startServer(client);
     } catch (error) {

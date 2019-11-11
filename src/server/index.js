@@ -5,7 +5,8 @@ import session from 'express-session';
 import proxy from 'express-http-proxy';
 import cors from './cors/cors';
 import configRoutes from './routes/routes';
-import { getProxyApis, getProxyPrefix, getProxyOptions } from './utils/proxy';
+import { getProxyOptions } from './utils/proxy';
+import { getProxyConfig } from './utils/config';
 
 export default authClient => {
     const server = express();
@@ -15,10 +16,15 @@ export default authClient => {
     server.use(bodyParser.urlencoded());
     server.use(session({ secret: 'awesome secret' }));
 
-    getProxyApis().forEach(api =>
-        server.use(`${getProxyPrefix()}/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
+    getProxyConfig().apis.forEach(api =>
+        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
     );
+
     configRoutes(server, authClient);
+
+
+    server.get('/isready', function ({res}) {res.send('READY!')});
+    server.get('/isalive', function ({res}) {res.send('ALIVE!')});
 
     const port = process.env.PORT || 8080;
     server.listen(port, () => {

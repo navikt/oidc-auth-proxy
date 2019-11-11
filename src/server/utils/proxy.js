@@ -1,26 +1,18 @@
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
+import { getRefererFromRequest } from './referer';
+import { getLoginScopes } from './config';
 
-const getProxyConfig = () => {
-    try {
-        return JSON.parse(process.env.PROXYCONFIG);
-    } catch (error) {
-        console.error('process.env.PROXYCONFIG is not a valid JSON');
-        process.exit(1);
-    }
-};
-
-export const getProxyPrefix = () => getProxyConfig().prefix;
-export const getProxyApis = () => getProxyConfig().apis;
+const loginScopes = getLoginScopes();
 
 export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
-        const authenticated = isAuthenticated(request.session.tokenSets, process.env.CLIENT_ID);
+        const authenticated = isAuthenticated({request});
         if (!authenticated) {
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
-                scope: `openid ${process.env.CLIENT_ID}/.default`
+                scope: loginScopes
             });
-            request.session.referer = request.headers.referer;
+            request.session.referer = getRefererFromRequest({request});
             response.header('Location', authorizationUrl);
             response.sendStatus(401);
         }
@@ -28,9 +20,9 @@ export const getProxyOptions = (api, authClient) => ({
     },
     proxyReqOptDecorator: (requestOptions, request) =>
         new Promise((resolve, reject) => {
-            getTokenOnBehalfOf(authClient, api.clientId, request).then(
-                ({ access_token }) => {
-                    requestOptions.headers.Authorization = `Bearer ${access_token}`;
+            getTokenOnBehalfOf({authClient, api, request}).then(
+                ({ token_type, access_token }) => {
+                    requestOptions.headers.Authorization = `${token_type} ${access_token}`;
                     resolve(requestOptions);
                 },
                 error => reject(error)

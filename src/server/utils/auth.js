@@ -1,40 +1,43 @@
 import { TokenSet } from 'openid-client';
+const self = "self"
 
-const getTokenSetsFromRequest = request => {
-    if (request.session) {
+const getTokenSetsFromSession = ({request}) => {
+    if (request && request.session) {
         return request.session.tokenSets;
+    } else {
+        return null;
     }
 };
 
-export const isAuthenticated = (tokenSets, clientId = process.env.CLIENT_ID) => {
-    if (tokenSets === undefined) {
+export const isAuthenticated = ({request = null, tokenSets = null, id = self}) => {
+    if (!tokenSets) {
+        tokenSets = getTokenSetsFromSession({request})
+    }
+    if (!tokenSets) {
         return false;
     }
 
-    const tokenSet = tokenSets[clientId];
-    if (tokenSet === undefined) {
+    const tokenSet = tokenSets[id];
+    if (!tokenSet) {
         return false;
     }
 
     return new TokenSet(tokenSet).expired() === false;
 };
 
-export async function getTokenOnBehalfOf(authClient, clientId, request) {
-    const tokenSets = getTokenSetsFromRequest(request);
-    if (!isAuthenticated(tokenSets, clientId)) {
-        try {
-            const onBehalfTokenSet = await authClient.grant({
-                grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-                requested_token_use: 'on_behalf_of',
-                scope: `${clientId}/.default`,
-                assertion: tokenSets[process.env.CLIENT_ID].access_token
-            });
-            request.session.tokenSets[clientId] = onBehalfTokenSet;
-            return onBehalfTokenSet;
-        } catch (error) {
-            console.error(error);
-        }
+export async function getTokenOnBehalfOf({authClient, api, request}) {
+    const tokenSets = getTokenSetsFromSession({request});
+    if (!isAuthenticated({tokenSets, id: api.id})) {
+        const onBehalfTokenSet = await authClient.grant({
+            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+            requested_token_use: 'on_behalf_of',
+            scope: api.scopes,
+            assertion: tokenSets[self].access_token
+        });
+        request.session.tokenSets[api.id] = onBehalfTokenSet;
+        return onBehalfTokenSet;
+    } else {
+        return tokenSets[api.id];
     }
-    return tokenSets[clientId];
 }

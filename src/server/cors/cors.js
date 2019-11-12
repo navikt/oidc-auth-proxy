@@ -1,9 +1,7 @@
-import { getApplicationBaseUrl } from "../utils/config";
-
-const applicationBaseUrl = getApplicationBaseUrl();
+import config from "../utils/config";
 
 export default (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', applicationBaseUrl);
+    res.setHeader('Access-Control-Allow-Origin', config.applicationBaseUrl);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.setHeader(

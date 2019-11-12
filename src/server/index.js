@@ -6,18 +6,28 @@ import proxy from 'express-http-proxy';
 import cors from './cors/cors';
 import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
-import { getProxyConfig } from './utils/config';
+import config from './utils/config';
 import k8sRoutes from './routes/k8s';
+import logger from './utils/log';
 
 export default authClient => {
     const server = express();
 
     server.use(helmet());
     server.use(cors);
-    server.use(bodyParser.urlencoded());
-    server.use(session({ secret: 'awesome secret' }));
+    server.use(bodyParser.urlencoded({
+        extended: true
+    }));
+    server.use(session({ 
+        secret: config.sessionIdCookieSecrets,
+        maxAge: 3599000,
+        httpOnly: true,
+        secure: config.sessionIdCookieSecure,
+        resave: false,
+        saveUninitialized: false
+    }));
 
-    getProxyConfig().apis.forEach(api =>
+    config.proxyConfig.apis.forEach(api =>
         server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
     );
     
@@ -26,6 +36,6 @@ export default authClient => {
 
     const port = process.env.PORT || 8080;
     server.listen(port, () => {
-        console.log(`Listening on port ${port}`);
+        logger.info(`Lytter på port ${port}`);
     });
 };

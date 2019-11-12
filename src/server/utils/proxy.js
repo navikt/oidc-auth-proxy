@@ -1,12 +1,16 @@
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { getRefererFromRequest } from './referer';
 import { getLoginScopes } from './config';
+import logger from './log';
+
 
 const loginScopes = getLoginScopes();
 
 export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
+        logger.info(`Proxy URL ${api.url}.`);
         const authenticated = isAuthenticated({request});
+        logger.info(`Authenticated = ${authenticated}`);
         if (!authenticated) {
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
@@ -22,6 +26,7 @@ export const getProxyOptions = (api, authClient) => ({
         new Promise((resolve, reject) => {
             getTokenOnBehalfOf({authClient, api, request}).then(
                 ({ token_type, access_token }) => {
+                    logger.info("Legger på Authorization header.");
                     requestOptions.headers['Authorization'] = `${token_type} ${access_token}`;
                     resolve(requestOptions);
                 },
@@ -31,6 +36,8 @@ export const getProxyOptions = (api, authClient) => ({
     proxyReqPathResolver: function(request) {
         const path = request.params[0];
         const queryString = request.url.split('?')[1];
-        return path + (queryString ? '?' + queryString : '');
+        const newPath = path + (queryString ? '?' + queryString : '');
+        logger.info(`Proxy Path ${newPath}.`);
+        return newPath;
     }
 });

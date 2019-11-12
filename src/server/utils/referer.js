@@ -1,4 +1,5 @@
 import { getApplicationBaseUrl } from "./config";
+import logger from './log';
 
 const applicationBaseUrl = getApplicationBaseUrl();
 const loginRedirectStopped = `${applicationBaseUrl}?error=login_redirect_stopped`;
@@ -9,7 +10,7 @@ const handleReferer = referer => {
     } else if (referer && referer.startsWith(applicationBaseUrl)) {
         return referer;
     } else {
-        console.warn(`Ikke white listed referer '${referer}'. Redirecter til '${loginRedirectStopped}'`);
+        logger.warning(`Ikke white listed referer '${referer}'. Redirecter til '${loginRedirectStopped}'`);
         return loginRedirectStopped;
     }
 }

@@ -1,5 +1,7 @@
 import { getRefererFromSession } from "../utils/referer";
 import { getOidcAuthProxyBaseUrl } from "../utils/config";
+import logger from '../utils/log';
+
 
 const callbackPath = "/oidc/callback";
 const callbackUrl = `${getOidcAuthProxyBaseUrl()}${callbackPath}`;
@@ -21,7 +23,7 @@ const callbackRoutes = (app, authClient) => {
                     res.redirect(getRefererFromSession({request: req}));
                 },
                 error => {
-                    console.error(error);
+                    logger.error("Feil ved callback", error);
                 }
             );
     });

@@ -40,6 +40,6 @@ npm start
 
 ## Todo
 [ ] Redis cache
-[ ] Babel bygg & startup
-[ ] Bygge docker image
-[ ] Format på logg
+
+[ ] Laste opp docker image
+

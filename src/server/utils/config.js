@@ -1,10 +1,12 @@
+import logger from './log';
+
 const environmentVariable = (name, secret = false) => {
     if (!process.env[name]) {
-        console.error(`Mangler environment variable '${name}'.`);
+        logger.error(`Mangler environment variable '${name}'.`);
         process.exit(1);
     }
     if (!secret) {
-        console.log(`Env[${name}]=${process.env[name]}`);
+        logger.info(`Env[${name}]=${process.env[name]}`);
     }
     return process.env[name]
 };
@@ -13,7 +15,7 @@ const environmentVariableAsJson = (name, secret = false) => {
     try {
         return JSON.parse(environmentVariable(name, secret));
     } catch (error) {
-        console.error(`Environment variable '${name}' er ikke et gyldig JSON-objekt.`, error);
+        logger.error(`Environment variable '${name}' er ikke et gyldig JSON-objekt.`, error);
         process.exit(1);
     }
 };
@@ -21,7 +23,7 @@ const environmentVariableAsJson = (name, secret = false) => {
 export const getJwks = () => {
     var jwk = environmentVariableAsJson("JWK", true);
     if (!jwk.kid) {
-        console.error(`Environment variable 'JWK' mangler 'kid' claim.`);
+        logger.error(`Environment variable 'JWK' mangler 'kid' claim.`);
         process.exit(1);
     }
     return {
@@ -31,20 +33,20 @@ export const getJwks = () => {
 export const getProxyConfig = () => {
     var config = environmentVariableAsJson("PROXY_CONFIG");
     if (!config.apis) {
-        console.log("Environment variable 'PROXY_CONFIG' mangler 'apis' entry.")
+        logger.error("Environment variable 'PROXY_CONFIG' mangler 'apis' entry.")
         exit(1);
     }
     config.apis.forEach((entry, index) => {
         if (!entry.path) {
-            console.error(`Api entry ${index} mangler 'path'`);
+            logger.error(`Api entry ${index} mangler 'path'`);
             process.exit(1);
         }
         if (!entry.url) {
-            console.error(`Api entry ${index} mangler 'url'`);
+            logger.error(`Api entry ${index} mangler 'url'`);
             process.exit(1);
         }
         if (!entry.scopes) {
-            console.error(`Api entry ${index} mangler 'scopes'`);
+            logger.error(`Api entry ${index} mangler 'scopes'`);
             process.exit(1);
         }
         entry.id =`api-${index}`;

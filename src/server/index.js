@@ -8,6 +8,7 @@ import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
 import { getProxyConfig } from './utils/config';
 import k8sRoutes from './routes/k8s';
+import logger from './utils/log';
 
 export default authClient => {
     const server = express();
@@ -26,6 +27,6 @@ export default authClient => {
 
     const port = process.env.PORT || 8080;
     server.listen(port, () => {
-        console.log(`Listening on port ${port}`);
+        logger.info(`Lytter på port ${port}`);
     });
 };

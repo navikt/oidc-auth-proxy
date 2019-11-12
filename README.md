@@ -5,11 +5,6 @@ Håndterer OIDC-innlogging, samt veksling til korrekt `on_behalf_of`- access tok
 
 Når det kreves en ny innlogging fra brukeren vil proxyen gi en 401 error med `Location` header satt til hvor brukeren må redirectes for å gjøre innloggingen. Dette for at applikasjonen skal få mulighet til å lagre unna eventuell state før man redirecter til login.
 
-## Bygg
-```
-npm install
-```
-
 ## Config
 Config plukkes opp fra environment variabler
 ### CLIENT_ID
@@ -33,13 +28,22 @@ Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 
-## Startup
-Endre på `apis` i preprod_env iht. hva du ønsker å teste (bl.a. må scopes endres). Deretter;
+## Startup dev
+Endre på `apis` i preprod_env iht. hva du ønsker å teste (bl.a. må scopes endres). Deretter sette secrets;
 ```
-export CLIENT_ID=fill-me
-export JWK='{"kid": "set-me"}'
+npm install
+export JWK='{"kid": "set-the-rest"}'
+export SESSION_ID_COOKIE_SIGN_SECRET=fill-me
+export SESSION_ID_COOKIE_SIGN_SECRET=fill-me
 source preprod_env
-npm start
+npm run start-dev
+```
+## Startup dist
+Sette config på ønsket måte.
+```
+npm install
+npm run build
+npm run start
 ```
 
 ## Todo

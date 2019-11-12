@@ -8,8 +8,8 @@ on:
       - 'CODEOWNERS'
     branches:
       - master
-
-  docker-and-nais-deploy:
+jobs:
+  docker:
     name: Laste opp docker image
     runs-on: ubuntu-latest
     steps:

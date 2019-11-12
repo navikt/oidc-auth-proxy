@@ -7,7 +7,7 @@ then
     for FILE in /var/run/secrets/nais.io/azuread/*
     do
         FILE_NAME=$(echo $FILE | sed 's:.*/::')
-        KEY=${FILE_NAME^^}
+        KEY=$(echo $FILE_NAME | tr '[:lower:]' '[:upper:]')
         VALUE=$(cat "$FILE")
 
         echo "- exporting $KEY"

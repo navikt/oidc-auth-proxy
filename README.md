@@ -24,6 +24,10 @@ Base URL'en din instans av OIDC auth proxy. Dette vil bla.a. brukes som grunnlag
 Base URL'en til din applikasjon som dette benyttes som proxy for. Denne bruke bla.a. til white listing av URL'er proxyen redirecter tilbake til etter innlogging. Om det er en adresse under denne url'en er det OK, ellers redirectes man default rett til base url'en.
 ### LOGIN_SCOPES
 Scopes som skal spørres om ved innlogging.
+### SESSION_ID_COOKIE_SIGN_SECRET
+Secret session id cookie signeres med (og verifiseres mot)
+### SESSION_ID_COOKIE_VERIFY_SECRET
+Secret session id cookie verifisres mot om den ikke var signert med `SESSION_ID_COOKIE_SIGN_SECRE` (For å rullere secrets.)
 ### PROXY_CONFIG
 Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker alle reqester som kommer bak denne pathen.
 

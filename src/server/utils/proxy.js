@@ -11,7 +11,8 @@ export const getProxyOptions = (api, authClient) => ({
         if (!authenticated) {
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
-                scope: config.loginScopes
+                scope: config.loginScopes,
+                redirect_uri: config.callbackUrl
             });
             request.session.referer = getRefererFromRequest({request});
             response.header('Location', authorizationUrl);

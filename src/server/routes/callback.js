@@ -2,17 +2,14 @@ import { getRefererFromSession } from "../utils/referer";
 import config from "../utils/config";
 import logger from '../utils/log';
 
-
-const callbackPath = "/oidc/callback";
-const callbackUrl = `${config.oidcAuthProxyBaseUrl}${callbackPath}`;
 const self = "self"
 
 const callbackRoutes = (app, authClient) => {
-    app.post(callbackPath, (req, res) => {
+    app.post(config.callbackPath, (req, res) => {
         const authorizationCode = req.query.code;
         const params = authClient.callbackParams(req);
         authClient
-            .callback(callbackUrl, params, {
+            .callback(config.callbackUrl, params, {
                 code_verifier: authorizationCode
             })
             .then(

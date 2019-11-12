@@ -6,7 +6,7 @@ import proxy from 'express-http-proxy';
 import cors from './cors/cors';
 import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
-import { getProxyConfig, getSessionIdCookieSecrets, getSessionIdCookieSecure } from './utils/config';
+import config from './utils/config';
 import k8sRoutes from './routes/k8s';
 import logger from './utils/log';
 
@@ -19,15 +19,15 @@ export default authClient => {
         extended: true
     }));
     server.use(session({ 
-        secret: getSessionIdCookieSecrets,
+        secret: config.sessionIdCookieSecrets,
         maxAge: 3599000,
         httpOnly: true,
-        secure: getSessionIdCookieSecure(),
+        secure: config.sessionIdCookieSecure,
         resave: false,
         saveUninitialized: false
     }));
 
-    getProxyConfig().apis.forEach(api =>
+    config.proxyConfig.apis.forEach(api =>
         server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
     );
     

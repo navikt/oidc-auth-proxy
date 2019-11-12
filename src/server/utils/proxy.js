@@ -1,10 +1,7 @@
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { getRefererFromRequest } from './referer';
-import { getLoginScopes } from './config';
+import config from './config';
 import logger from './log';
-
-
-const loginScopes = getLoginScopes();
 
 export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
@@ -14,7 +11,7 @@ export const getProxyOptions = (api, authClient) => ({
         if (!authenticated) {
             const authorizationUrl = authClient.authorizationUrl({
                 response_mode: 'form_post',
-                scope: loginScopes
+                scope: config.loginScopes
             });
             request.session.referer = getRefererFromRequest({request});
             response.header('Location', authorizationUrl);

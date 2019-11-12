@@ -7,6 +7,8 @@ const environmentVariable = (name, secret = false) => {
     }
     if (!secret) {
         logger.info(`Env[${name}]=${process.env[name]}`);
+    } else {
+        logger.info(`Env[${name}]=***`);
     }
     return process.env[name]
 };
@@ -20,7 +22,7 @@ const environmentVariableAsJson = (name, secret = false) => {
     }
 };
 
-export const getJwks = () => {
+const getJwks = () => {
     var jwk = environmentVariableAsJson("JWK", true);
     if (!jwk.kid) {
         logger.error(`Environment variable 'JWK' mangler 'kid' claim.`);
@@ -30,7 +32,7 @@ export const getJwks = () => {
         keys: [jwk]
     };
 };
-export const getProxyConfig = () => {
+const getProxyConfig = () => {
     var config = environmentVariableAsJson("PROXY_CONFIG");
     if (!config.apis) {
         logger.error("Environment variable 'PROXY_CONFIG' mangler 'apis' entry.")
@@ -54,19 +56,29 @@ export const getProxyConfig = () => {
     return config;
 };
 
-export const getClientId = () => environmentVariable("CLIENT_ID");
-export const getLoginScopes = () => environmentVariable("LOGIN_SCOPES");
-export const getDiscoveryUrl = () => environmentVariable("DISCOVERY_URL");
-export const getOidcAuthProxyBaseUrl = () => environmentVariable("OIDC_AUTH_PROXY_BASE_URL");
-export const getApplicationBaseUrl = () => environmentVariable("APPLICATION_BASE_URL");
-const getSessionIdCookieSignSecret = () => environmentVariable("SESSION_ID_COOKIE_SIGN_SECRET", true);
-const getSessionIdCookieVerifySecret = () => environmentVariable("SESSION_ID_COOKIE_VERIFY_SECRET", true);
-export const getSessionIdCookieSecrets = [
-    getSessionIdCookieSignSecret(),
-    getSessionIdCookieVerifySecret()
+const clientId = environmentVariable("CLIENT_ID");
+const loginScopes = environmentVariable("LOGIN_SCOPES");
+const discoveryUrl = environmentVariable("DISCOVERY_URL");
+const oidcAuthProxyBaseUrl = environmentVariable("OIDC_AUTH_PROXY_BASE_URL");
+const applicationBaseUrl = environmentVariable("APPLICATION_BASE_URL");
+const sessionIdCookieSignSecret = environmentVariable("SESSION_ID_COOKIE_SIGN_SECRET", true);
+const sessionIdCookieVerifySecret =  environmentVariable("SESSION_ID_COOKIE_VERIFY_SECRET", true);
+const sessionIdCookieSecrets = [
+    sessionIdCookieSignSecret,
+    sessionIdCookieVerifySecret
 ];
-export const getSessionIdCookieSecure = () => {
-    const applicationBaseUrl = getApplicationBaseUrl().toLocaleLowerCase();
-    const oidcAuthProxyBaseUrl = getOidcAuthProxyBaseUrl().toLocaleLowerCase();
-    return applicationBaseUrl.startsWith("https") && oidcAuthProxyBaseUrl.startsWith("https");
+const getSessionIdCookieSecure = () => {
+    return applicationBaseUrl.toLocaleLowerCase().startsWith("https") && oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith("https");
 }
+
+module.exports = {
+    clientId,
+    loginScopes,
+    discoveryUrl,
+    oidcAuthProxyBaseUrl,
+    applicationBaseUrl,
+    sessionIdCookieSecrets,
+    sessionIdCookieSecure: getSessionIdCookieSecure(),
+    jwks: getJwks(),
+    proxyConfig: getProxyConfig()
+};

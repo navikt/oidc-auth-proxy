@@ -1,7 +1,7 @@
-import { getApplicationBaseUrl } from "./config";
+import config from "./config";
 import logger from './log';
 
-const applicationBaseUrl = getApplicationBaseUrl();
+const applicationBaseUrl = config.applicationBaseUrl;
 const loginRedirectStopped = `${applicationBaseUrl}?error=login_redirect_stopped`;
 
 const handleReferer = referer => {

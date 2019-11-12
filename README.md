@@ -25,6 +25,8 @@ Secret session id cookie signeres med (og verifiseres mot)
 Secret session id cookie verifisres mot om den ikke var signert med `SESSION_ID_COOKIE_SIGN_SECRE` (For å rullere secrets.)
 ### PROXY_CONFIG
 Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker alle reqester som kommer bak denne pathen.
+### HTTP_PROXY
+Proxy som benyttes mot oidc provider (optional.)
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 

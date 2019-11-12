@@ -25,7 +25,7 @@ jobs:
         run: npm run build
       - name: Sette Docker- navn og tag
         env:
-          DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/k9-punsj-oidc-auth-proxy
+          DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
         run: |
           echo $DOCKER_IMAGE > .docker_image
           echo "$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" > .docker_tag

@@ -45,9 +45,3 @@ npm install
 npm run build
 npm run start
 ```
-
-## Todo
-[ ] Redis cache
-
-[ ] Laste opp docker image
-

@@ -10,7 +10,9 @@ const callbackRoutes = (app, authClient) => {
         const params = authClient.callbackParams(req);
         authClient
             .callback(config.callbackUrl, params, {
-                code_verifier: authorizationCode
+                code_verifier: authorizationCode,
+                nonce: req.session.nonce,
+                state: req.session.state
             })
             .then(
                 tokenSet => {

@@ -19,12 +19,11 @@ export async function buildIssuer() {
 }
 
 export function buildClient(issuer) {
-    const client = new issuer.Client(metadata, config.jwks);
     if (httpProxy) {
-        client[custom.http_options] = function(options) {
+        issuer.Client[custom.http_options] = function(options) {
             options.agent = httpProxy;
             return options;
         };
     }
-    return client;
+    return new issuer.Client(metadata, config.jwks);;
 }

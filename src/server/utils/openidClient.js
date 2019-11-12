@@ -1,6 +1,7 @@
 import config from "./config";
 import { httpProxy } from './httpProxy';
 import { Issuer, custom } from 'openid-client';
+import logger from './log';
 
 const metadata = {
     client_id: config.clientId,
@@ -8,22 +9,21 @@ const metadata = {
     token_endpoint_auth_signing_alg: 'RS256'
 };
 
-export async function buildIssuer() {
+export function configureHttpProxy() {
     if (httpProxy) {
-        Issuer[custom.http_options] = function(options) {
-            options.agent = httpProxy;
-            return options;
-        };
+        logger.info("Registrerer http proxy proy for openid-client requests.")
+        custom.setHttpOptionsDefaults({
+            agent: httpProxy
+        });
+    } else {
+        logger.info("openid-client requester går uten http proxy.")
     }
+}
+
+export async function buildIssuer() {
     return Issuer.discover(config.discoveryUrl);
 }
 
 export function buildClient(issuer) {
-    if (httpProxy) {
-        issuer.Client[custom.http_options] = function(options) {
-            options.agent = httpProxy;
-            return options;
-        };
-    }
     return new issuer.Client(metadata, config.jwks);;
 }

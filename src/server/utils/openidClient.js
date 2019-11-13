@@ -11,7 +11,7 @@ const metadata = {
 
 export function configureHttpProxy() {
     if (httpProxy) {
-        logger.info("Registrerer http proxy proy for openid-client requests.")
+        logger.info("Registrerer http proxy for openid-client requests.")
         custom.setHttpOptionsDefaults({
             agent: httpProxy
         });

@@ -27,6 +27,9 @@ Secret session id cookie verifisres mot om den ikke var signert med `SESSION_ID_
 Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker alle reqester som kommer bak denne pathen.
 ### HTTP_PROXY
 Proxy som benyttes mot oidc provider (optional.)
+### ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES
+Om settes til `true` vil det tillates at proxyen fungerer som proxy mot tjenester med selvsignerte TLS sertifikater.
+Alle andre verdier vil føre til feil ved proxy request til tjenester med selvsignerte TLS sertifikater
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 

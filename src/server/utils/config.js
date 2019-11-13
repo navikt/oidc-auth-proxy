@@ -64,6 +64,7 @@ const applicationBaseUrl = environmentVariable("APPLICATION_BASE_URL");
 const allowProxyToSelfSignedCertificates = environmentVariable("ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES").toLowerCase() === 'true';
 const callbackPath = "/oidc/callback";
 const callbackUrl = `${oidcAuthProxyBaseUrl}${callbackPath}`;
+const sessionIdCookieName = environmentVariable("SESSION_ID_COOKIE_NAME");
 const sessionIdCookieSignSecret = environmentVariable("SESSION_ID_COOKIE_SIGN_SECRET", true);
 const sessionIdCookieVerifySecret =  environmentVariable("SESSION_ID_COOKIE_VERIFY_SECRET", true);
 const sessionIdCookieSecrets = [
@@ -82,6 +83,7 @@ module.exports = {
     applicationBaseUrl,
     sessionIdCookieSecrets,
     sessionIdCookieSecure: getSessionIdCookieSecure(),
+    sessionIdCookieName,
     jwks: getJwks(),
     proxyConfig: getProxyConfig(),
     callbackPath,

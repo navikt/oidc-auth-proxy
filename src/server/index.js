@@ -18,13 +18,17 @@ export default authClient => {
     server.use(bodyParser.urlencoded({
         extended: true
     }));
+
     server.use(session({ 
+        name: config.sessionIdCookieName,
         secret: config.sessionIdCookieSecrets,
-        maxAge: 3599000,
-        httpOnly: true,
-        secure: config.sessionIdCookieSecure,
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 3599000,
+            secure: config.sessionIdCookieSecure,
+            httpOnly: true
+        }
     }));
 
     config.proxyConfig.apis.forEach(api =>

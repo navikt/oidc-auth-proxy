@@ -1,4 +1,5 @@
 name: Build and deploy Docker
+
 on:
   push:
     paths-ignore:
@@ -8,6 +9,7 @@ on:
       - 'CODEOWNERS'
     branches:
       - master
+
 jobs:
   docker:
     name: Laste opp docker image

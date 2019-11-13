@@ -3,6 +3,7 @@ import { getRefererFromRequest } from './referer';
 import { generators } from 'openid-client';
 import config from './config';
 import logger from './log';
+import url from 'url';
 
 export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
@@ -41,9 +42,10 @@ export const getProxyOptions = (api, authClient) => ({
             );
         }),
     proxyReqPathResolver: function(request) {
-        const path = request.params[0];
+        const pathFromApi = (url.parse(api.url).pathname === '/' ? '' : url.parse(api.url).pathname);
+        const pathFromRequest = request.params[0];
         const queryString = request.url.split('?')[1];
-        const newPath = path + (queryString ? '?' + queryString : '');
+        const newPath = (pathFromApi ? pathFromApi : '') + (pathFromRequest ? pathFromRequest : '') + (queryString ? '?' + queryString : '');
         logger.info(`Proxy Path ${newPath}.`);
         return newPath;
     }

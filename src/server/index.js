@@ -9,6 +9,7 @@ import { getProxyOptions } from './utils/proxy';
 import config from './utils/config';
 import k8sRoutes from './routes/k8s';
 import logger from './utils/log';
+import { getSessionStore } from './utils/sessionStore';
 
 export default authClient => {
     const server = express();
@@ -19,7 +20,8 @@ export default authClient => {
         extended: true
     }));
 
-    server.use(session({ 
+    server.use(session({
+        store: getSessionStore(),
         name: config.sessionIdCookieName,
         secret: config.sessionIdCookieSecrets,
         resave: false,

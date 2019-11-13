@@ -75,6 +75,10 @@ const getSessionIdCookieSecure = () => {
     return applicationBaseUrl.toLocaleLowerCase().startsWith("https") && oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith("https");
 }
 
+const getRedisPassword = () => environmentVariable("REDIS_PASSWORD", true);
+const getRedisPort = () => environmentVariable("REDIS_PORT");
+const getRedisHost = () => environmentVariable("REDIS_HOST");
+
 module.exports = {
     clientId,
     loginScopes,
@@ -88,5 +92,8 @@ module.exports = {
     proxyConfig: getProxyConfig(),
     callbackPath,
     callbackUrl,
-    allowProxyToSelfSignedCertificates
+    allowProxyToSelfSignedCertificates,
+    getRedisHost,
+    getRedisPort,
+    getRedisPassword
 };

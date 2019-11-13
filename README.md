@@ -20,18 +20,20 @@ Base URL'en til din applikasjon som dette benyttes som proxy for. Denne bruke bl
 ### LOGIN_SCOPES
 Scopes som skal spørres om ved innlogging.
 ### SESSION_ID_COOKIE_NAME
-Navnet på Session ID Cookie
+Navnet på Session ID Co
 ### SESSION_ID_COOKIE_SIGN_SECRET
 Secret session id cookie signeres med (og verifiseres mot)
 ### SESSION_ID_COOKIE_VERIFY_SECRET
 Secret session id cookie verifisres mot om den ikke var signert med `SESSION_ID_COOKIE_SIGN_SECRE` (For å rullere secrets.)
-### PROXY_CONFIG
-Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker alle reqester som kommer bak denne pathen.
 ### HTTP_PROXY
 Proxy som benyttes mot oidc provider (optional.)
 ### ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES
 Om settes til `true` vil det tillates at proxyen fungerer som proxy mot tjenester med selvsignerte TLS sertifikater.
 Alle andre verdier vil føre til feil ved proxy request til tjenester med selvsignerte TLS sertifikater
+### REDIS_HOST, REDIS_PORT & REDIS_PASSWORD
+Må settes så fremt man ikke kjører applikasjonen med `OIDC_AUTH_PROXY_BASE_URL` på `localhost`
+### PROXY_CONFIG
+Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker alle reqester som kommer bak denne pathen.
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 

@@ -13,6 +13,7 @@ import { getSessionStore } from './utils/sessionStore';
 
 export default authClient => {
     const server = express();
+    const sessionStore = getSessionStore(session);
 
     server.use(helmet());
     server.use(cors);
@@ -21,7 +22,7 @@ export default authClient => {
     }));
 
     server.use(session({
-        store: getSessionStore(),
+        store: sessionStore,
         name: config.sessionIdCookieName,
         secret: config.sessionIdCookieSecrets,
         resave: false,

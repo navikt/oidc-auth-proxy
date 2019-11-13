@@ -33,7 +33,5 @@ jobs:
         run: docker build . --pull -t $(cat .docker_image):$(cat .docker_tag)
       - name: Laste opp Docker image
         run: |
-          echo "$GITHUB_ACCESS_TOKEN" | docker login --username "x-access-token" --password-stdin https://docker.pkg.github.com
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push $(cat .docker_image):$(cat .docker_tag)
-        env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}

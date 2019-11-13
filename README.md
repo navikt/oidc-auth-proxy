@@ -6,7 +6,7 @@ Håndterer OIDC-innlogging, samt veksling til korrekt `on_behalf_of`- access tok
 Når det kreves en ny innlogging fra brukeren vil proxyen gi en 401 error med `Location` header satt til hvor brukeren må redirectes for å gjøre innloggingen. Dette for at applikasjonen skal få mulighet til å lagre unna eventuell state før man redirecter til login.
 
 ## Config
-Config plukkes opp fra environment variabler
+Config plukkes opp fra environment variabler.
 ### CLIENT_ID
 OIDC Client ID for applikasjonen.
 ### JWK
@@ -20,7 +20,7 @@ Base URL'en til din applikasjon som dette benyttes som proxy for. Denne bruke bl
 ### LOGIN_SCOPES
 Scopes som skal spørres om ved innlogging.
 ### SESSION_ID_COOKIE_NAME
-Navnet på Session ID Co
+Navnet på Session ID Cookie.
 ### SESSION_ID_COOKIE_SIGN_SECRET
 Secret session id cookie signeres med (og verifiseres mot)
 ### SESSION_ID_COOKIE_VERIFY_SECRET

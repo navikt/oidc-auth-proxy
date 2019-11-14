@@ -20,6 +20,7 @@ export default authClient => {
     server.use(bodyParser.urlencoded({
         extended: true
     }));
+    server.set('trust proxy', 1);
 
     server.use(session({
         store: sessionStore,

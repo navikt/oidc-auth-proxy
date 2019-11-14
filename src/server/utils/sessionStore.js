@@ -9,7 +9,7 @@ export const getSessionStore = session => {
         logger.warning("Kjører applikasjonen med Session Store In Memory.");
         return new MemoryStore();
     } else {
-        logger.info("Initialiserer Session Store mot Redis.")
+        logger.info("Initialiserer Redis Session Store.")
         const RedisStore = require('connect-redis')(session);
         const redisClient = redis.createClient({
             host: config.getRedisHost(),
@@ -22,6 +22,6 @@ export const getSessionStore = session => {
         redisClient.on('error', err => {
             logger.error('Redis client feil', err);
         });
-        new RedisStore({ client: redisClient });
+        return new RedisStore({ client: redisClient });
     }
 } 

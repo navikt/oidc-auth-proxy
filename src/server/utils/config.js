@@ -72,7 +72,13 @@ const sessionIdCookieSecrets = [
     sessionIdCookieVerifySecret
 ];
 const getSessionIdCookieSecure = () => {
-    return applicationBaseUrl.toLocaleLowerCase().startsWith("https") && oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith("https");
+    const secure = applicationBaseUrl.toLocaleLowerCase().startsWith("https") && oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith("https");
+    if (secure) {
+        logger.info("SecureCookie=true")
+    } else {
+        logger.warning("SecureCookie=false")
+    }
+    return secure;
 }
 
 const getRedisPassword = () => environmentVariable("REDIS_PASSWORD", true);

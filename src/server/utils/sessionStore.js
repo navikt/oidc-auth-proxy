@@ -22,6 +22,6 @@ export const getSessionStore = session => {
         redisClient.on('error', err => {
             logger.error('Redis client feil', err);
         });
-        new RedisStore({ client: redisClient });
+        return new RedisStore({ client: redisClient });
     }
 } 

@@ -1,4 +1,8 @@
 import { TokenSet } from 'openid-client';
+import config from "./config";
+import { generators } from 'openid-client';
+import { getRefererFromRequest } from './referer';
+
 const self = "self"
 
 const getTokenSetsFromSession = ({request}) => {
@@ -40,4 +44,18 @@ export async function getTokenOnBehalfOf({authClient, api, request}) {
     } else {
         return tokenSets[api.id];
     }
+}
+
+export function getAuthorizationUrl({request, authClient}) {
+    request.session.nonce = generators.nonce();
+    request.session.state = generators.state();
+    request.session.referer = getRefererFromRequest({request});
+    return authClient.authorizationUrl({
+        response_mode: 'form_post',
+        response_type: 'code',
+        scope: config.loginScopes,
+        redirect_uri: config.callbackUrl,
+        nonce: request.session.nonce,
+        state: request.session.state
+    });
 }

@@ -1,7 +1,8 @@
-import { getTokenOnBehalfOf, isAuthenticated, getAuthorizationUrl } from './auth';
+import { getTokenOnBehalfOf, isAuthenticated, prepareAndGetAuthorizationUrl } from './auth';
 import config from './config';
 import logger from './log';
 import url from 'url';
+import { getRedirectUriFromHeader } from './redirectUri';
 
 export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
@@ -9,7 +10,8 @@ export const getProxyOptions = (api, authClient) => ({
         const authenticated = isAuthenticated({request});
         logger.info(`Authenticated = ${authenticated}`);
         if (!authenticated) {
-            const authorizationUrl = getAuthorizationUrl({requesdt, authClient});
+            const redirectUri = getRedirectUriFromHeader({request});
+            const authorizationUrl = prepareAndGetAuthorizationUrl({request, authClient, redirectUri});
             response.header('Location', authorizationUrl);
             response.sendStatus(401);
         }

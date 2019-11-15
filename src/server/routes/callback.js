@@ -1,4 +1,4 @@
-import { getRefererFromSession } from "../utils/referer";
+import { getRedirectUriFromSession } from "../utils/redirectUri";
 import config from "../utils/config";
 import logger from '../utils/log';
 
@@ -19,7 +19,7 @@ const callbackRoutes = (app, authClient) => {
                     req.session.tokenSets = {
                         [self]: tokenSet
                     };
-                    res.redirect(getRefererFromSession({request: req}));
+                    res.redirect(getRedirectUriFromSession({request: req}));
                 },
                 error => {
                     logger.error("Feil ved callback", error);

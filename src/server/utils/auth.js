@@ -1,7 +1,7 @@
 import { TokenSet } from 'openid-client';
 import config from "./config";
 import { generators } from 'openid-client';
-import { getRefererFromRequest } from './referer';
+import { setRedirectUriOnSession } from './redirectUri';
 
 const self = "self"
 
@@ -46,10 +46,10 @@ export async function getTokenOnBehalfOf({authClient, api, request}) {
     }
 }
 
-export function getAuthorizationUrl({request, authClient}) {
+export function prepareAndGetAuthorizationUrl({request, authClient, redirectUri}) {
     request.session.nonce = generators.nonce();
     request.session.state = generators.state();
-    request.session.referer = getRefererFromRequest({request});
+    setRedirectUriOnSession({request, redirectUri});
     return authClient.authorizationUrl({
         response_mode: 'form_post',
         response_type: 'code',

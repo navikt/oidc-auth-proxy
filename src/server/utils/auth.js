@@ -5,7 +5,7 @@ import { setRedirectUriOnSession } from './redirectUri';
 
 const self = "self"
 
-const getTokenSetsFromSession = ({request}) => {
+export const getTokenSetsFromSession = ({request}) => {
     if (request && request.session) {
         return request.session.tokenSets;
     } else {

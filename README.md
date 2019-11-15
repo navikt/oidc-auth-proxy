@@ -5,6 +5,15 @@ Håndterer OIDC-innlogging, samt veksling til korrekt `on_behalf_of`- access tok
 
 Når det kreves en ny innlogging fra brukeren vil proxyen gi en 401 error med `Location` header satt til hvor brukeren må redirectes for å gjøre innloggingen. Dette for at applikasjonen skal få mulighet til å lagre unna eventuell state før man redirecter til login.
 
+## End points
+### GET /login?redirect_uri=
+Redirect URI må være tilknyttet `APPLICATION_BASE_URL`
+Redirecter til login og redirecter tilbake til `redirect_uri` når innloggingen er ferdig.
+### ANY /logout
+Logger brukeren ut og returnerer 204
+### GET /me
+Returnerer 200 JSON med `name` attributt satt til navnet på innlogget bruker (Krever at `profile` scope er satt ved innlogging, ellers returneres kun en tom JOSN).
+Returnerer 401 om brukeren ikke er logget inn.
 ## Config
 Config plukkes opp fra environment variabler.
 ### CLIENT_ID

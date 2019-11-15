@@ -1,9 +1,8 @@
-import { getTokenOnBehalfOf, isAuthenticated } from './auth';
-import { getRefererFromRequest } from './referer';
-import { generators } from 'openid-client';
+import { getTokenOnBehalfOf, isAuthenticated, prepareAndGetAuthorizationUrl } from './auth';
 import config from './config';
 import logger from './log';
 import url from 'url';
+import { getRedirectUriFromHeader } from './redirectUri';
 
 export const getProxyOptions = (api, authClient) => ({
     filter: (request, response) => {
@@ -11,17 +10,8 @@ export const getProxyOptions = (api, authClient) => ({
         const authenticated = isAuthenticated({request});
         logger.info(`Authenticated = ${authenticated}`);
         if (!authenticated) {
-            request.session.nonce = generators.nonce();
-            request.session.state = generators.state();
-            const authorizationUrl = authClient.authorizationUrl({
-                response_mode: 'form_post',
-                response_type: 'code',
-                scope: config.loginScopes,
-                redirect_uri: config.callbackUrl,
-                nonce: request.session.nonce,
-                state: request.session.state
-            });
-            request.session.referer = getRefererFromRequest({request});
+            const redirectUri = getRedirectUriFromHeader({request});
+            const authorizationUrl = prepareAndGetAuthorizationUrl({request, authClient, redirectUri});
             response.header('Location', authorizationUrl);
             response.sendStatus(401);
         }

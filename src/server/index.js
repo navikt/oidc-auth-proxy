@@ -10,6 +10,9 @@ import config from './utils/config';
 import k8sRoutes from './routes/k8s';
 import logger from './utils/log';
 import { getSessionStore } from './utils/sessionStore';
+import { loginRoutes } from './routes/login';
+import { logoutRoutes } from './routes/logout';
+import { meRoutes } from './routes/me';
 
 export default authClient => {
     const server = express();
@@ -40,6 +43,9 @@ export default authClient => {
     );
     
     callbackRoutes(server, authClient);
+    loginRoutes(server, authClient);
+    logoutRoutes(server);
+    meRoutes(server);
     k8sRoutes(server);
 
     const port = process.env.PORT || 8080;

@@ -70,7 +70,6 @@ server.get('/authorize', (req, response) => {
           }
     };
     const httpRequest = http.request(options, function(res){
-        console.log("TIL " + res.headers.location);
         response.redirect(res.headers.location);
     });
 

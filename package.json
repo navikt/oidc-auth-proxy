@@ -6,7 +6,8 @@
     "build": "babel src -d dist",
     "start": "node dist/startup.js",
     "start-dev": "nodemod --exec babel-node src/startup.js",
-    "start-dev-with-mocks": "babel-node ./test/dummy-oidc-provider.js & babel-node ./test/dummy-api.js & babel-node -r node_modules/dotenv/config src/startup.js dotenv_config_path=test/test.env"
+    "build-dev-with-mocks": "babel src -d dist & babel test -d dist",
+    "start-dev-with-mocks": "node dist/dummy-oidc-provider.js & node dist/dummy-api.js & node -r dotenv/config dist/startup.js dotenv_config_path=test/test.env"
   },
   "author": "NAV",
   "license": "MIT",

@@ -61,6 +61,7 @@ npm run start-dev
 Dette starter `oidc-auth-proxy` på port `8081`, en dummy oidc-provider på port `8082`, et dummy api på `8083` og tar utgangspunkt i at du din app kjører på `localhost:8080`
 ```
 npm install
+npm run build-dev-with-mocks
 npm run start-dev-with-mocks
 ```
 

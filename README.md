@@ -56,6 +56,14 @@ export SESSION_ID_COOKIE_SIGN_SECRET=fill-me
 source preprod_env
 npm run start-dev
 ```
+
+## Startup dev med mocks
+Dette starter `oidc-auth-proxy` på port `8081`, en dummy oidc-provider på port `8082`, et dummy api på `8083` og tar utgangspunkt i at du din app kjører på `localhost:8080`
+```
+npm install
+npm run start-dev-with-mocks
+```
+
 ## Startup dist
 Sette config på ønsket måte.
 ```

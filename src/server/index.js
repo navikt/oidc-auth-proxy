@@ -18,7 +18,9 @@ export default authClient => {
     const server = express();
     const sessionStore = getSessionStore(session);
 
-    server.use(helmet());
+    server.use(helmet({
+        frameguard: false
+    }));
     server.use(cors);
     server.use(bodyParser.urlencoded({
         extended: true

@@ -96,6 +96,9 @@ const wellKnown = {
       "openid",
       "profile"
     ],
+    subject_types_supported: [
+        "pairwise"
+    ],
     issuer: "http://localhost:8082/issuer"
 };
 

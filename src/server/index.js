@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import proxy from 'express-http-proxy';
-import cors from './cors/cors';
+import cors from 'cors';
 import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
 import config from './utils/config';
@@ -21,7 +21,13 @@ export default authClient => {
     server.use(helmet({
         frameguard: false
     }));
-    server.use(cors);
+    server.use(cors({
+        origin: config.applicationBaseUrl,
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Referer'],
+        exposedHeaders: ['Location']
+    }));
+    
     server.use(bodyParser.urlencoded({
         extended: true
     }));

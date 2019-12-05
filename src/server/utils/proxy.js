@@ -5,6 +5,7 @@ import url from 'url';
 import { getRedirectUriFromHeader } from './redirectUri';
 
 export const getProxyOptions = (api, authClient) => ({
+    parseReqBody: false,
     filter: (request, response) => {
         logger.info(`Proxy URL ${api.url}.`);
         const authenticated = isAuthenticated({request});

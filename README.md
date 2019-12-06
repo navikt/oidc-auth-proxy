@@ -14,6 +14,7 @@ Logger brukeren ut og returnerer 204
 ### GET /me
 Returnerer 200 JSON med `name` attributt satt til navnet på innlogget bruker (Krever at `profile` scope er satt ved innlogging, ellers returneres kun en tom JOSN).
 Returnerer 401 om brukeren ikke er logget inn.
+
 ## Config
 Config plukkes opp fra environment variabler.
 ### CLIENT_ID
@@ -41,6 +42,8 @@ Om settes til `true` vil det tillates at proxyen fungerer som proxy mot tjeneste
 Alle andre verdier vil føre til feil ved proxy request til tjenester med selvsignerte TLS sertifikater
 ### REDIS_HOST, REDIS_PORT & REDIS_PASSWORD
 Må settes så fremt man ikke kjører applikasjonen med `OIDC_AUTH_PROXY_BASE_URL` på `localhost`
+### CORS_ALLOWED_HEADERS && CORS_EXPOSED_HEADERS
+Valgfrie. Default er ingen headere. Settes som CSV-verdier.
 ### PROXY_CONFIG
 Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker alle reqester som kommer bak denne pathen.
 

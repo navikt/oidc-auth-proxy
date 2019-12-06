@@ -24,8 +24,8 @@ export default authClient => {
     server.use(cors({
         origin: config.applicationBaseUrl,
         credentials: true,
-        allowedHeaders: ['Content-Type', 'Referer'],
-        exposedHeaders: ['Location']
+        allowedHeaders: config.getCorsAllowedHeaders(),
+        exposedHeaders: config.getCorsExposedHeaders()
     }));
     
     server.use(bodyParser.urlencoded({

@@ -28,6 +28,8 @@ const getJwks = () => {
         logger.error(`Environment variable 'JWK' mangler 'kid' claim.`);
         process.exit(1);
     }
+    // UnhandledPromiseRejectionWarning: JWKInvalid: `x5c` member at index 0 is not a valid base64-encoded DER PKIX certificate
+    delete jwk.x5c;
     return {
         keys: [jwk]
     };

@@ -1,8 +1,8 @@
-import { getRedirectUriFromSession } from "../utils/redirectUri";
-import config from "../utils/config";
+import { getRedirectUriFromSession } from '../utils/redirectUri';
+import config from '../utils/config';
 import logger from '../utils/log';
 
-const self = "self"
+const self = 'self';
 
 const callbackRoutes = (app, authClient) => {
     app.post(config.callbackPath, (req, res) => {
@@ -12,17 +12,17 @@ const callbackRoutes = (app, authClient) => {
             .callback(config.callbackUrl, params, {
                 code_verifier: authorizationCode,
                 nonce: req.session.nonce,
-                state: req.session.state
+                state: req.session.state,
             })
             .then(
-                tokenSet => {
+                (tokenSet) => {
                     req.session.tokenSets = {
-                        [self]: tokenSet
+                        [self]: tokenSet,
                     };
-                    res.redirect(getRedirectUriFromSession({request: req}));
+                    res.redirect(getRedirectUriFromSession({ request: req }));
                 },
-                error => {
-                    logger.error("Feil ved callback", error);
+                (error) => {
+                    logger.error('Feil ved callback', error);
                 }
             );
     });

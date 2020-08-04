@@ -3,14 +3,14 @@ import bodyParser from 'body-parser';
 
 const server = express();
 
-server.use(bodyParser.json())
+server.use(bodyParser.json());
 
 server.get('*', (req, res) => {
     res.send('get ok');
 });
 
 server.post('*', (req, res) => {
-    res.header("Location", "http://localhost:1337");
+    res.header('Location', 'http://localhost:1337');
     console.log(req.body);
     res.sendStatus(201);
 });

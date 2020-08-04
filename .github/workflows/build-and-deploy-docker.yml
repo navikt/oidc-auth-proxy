@@ -1,48 +1,48 @@
 name: Build and deploy Docker
 
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - '.gitignore'
-      - 'LICENCE'
-      - 'CODEOWNERS'
-      - 'test/**'
-    branches:
-      - master
+    push:
+        paths-ignore:
+            - '**.md'
+            - '.gitignore'
+            - 'LICENCE'
+            - 'CODEOWNERS'
+            - 'test/**'
+        branches:
+            - master
 
 jobs:
-  docker:
-    name: Laste opp docker image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Hente kode
-        uses: actions/checkout@v1
-      - name: Sette opp Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - name: Installere alle dependencies
-        run: npm install
-      - name: Bygge Dist
-        run: npm run build
-      - name: Slette dependencies
-        run: rm -rf node_modules/
-      - name: Installere production dependencies
-        run: npm install --only=production
-      - name: Sette Docker- navn og tag
-        env:
-          DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
-        run: |
-          echo $DOCKER_IMAGE > .docker_image
-          echo "$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" > .docker_tag
-      - name: Bygge Docker image
-        run: docker build . --pull -t $(cat .docker_image):$(cat .docker_tag)
-      - name: Laste opp Docker image
-        run: |
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push $(cat .docker_image):$(cat .docker_tag)
-          docker tag $(cat .docker_image):$(cat .docker_tag) $(cat .docker_image):latest
-          docker push $(cat .docker_image):latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    docker:
+        name: Laste opp docker image
+        runs-on: ubuntu-latest
+        steps:
+            - name: Hente kode
+              uses: actions/checkout@v1
+            - name: Sette opp Node
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '12.x'
+            - name: Installere alle dependencies
+              run: npm install
+            - name: Bygge Dist
+              run: npm run build
+            - name: Slette dependencies
+              run: rm -rf node_modules/
+            - name: Installere production dependencies
+              run: npm install --only=production
+            - name: Sette Docker- navn og tag
+              env:
+                  DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
+              run: |
+                  echo $DOCKER_IMAGE > .docker_image
+                  echo "$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" > .docker_tag
+            - name: Bygge Docker image
+              run: docker build . --pull -t $(cat .docker_image):$(cat .docker_tag)
+            - name: Laste opp Docker image
+              run: |
+                  docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+                  docker push $(cat .docker_image):$(cat .docker_tag)
+                  docker tag $(cat .docker_image):$(cat .docker_tag) $(cat .docker_image):latest
+                  docker push $(cat .docker_image):latest
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

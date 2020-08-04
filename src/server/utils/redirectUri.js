@@ -1,10 +1,10 @@
-import config from "./config";
+import config from './config';
 import logger from './log';
 
 const applicationBaseUrl = config.applicationBaseUrl;
 const loginRedirectStopped = `${applicationBaseUrl}?error=redirect_uri_rejected`;
 
-const handleRedirectUri = redirectUri => {
+const handleRedirectUri = (redirectUri) => {
     if (!redirectUri) {
         return applicationBaseUrl;
     } else if (redirectUri && redirectUri.startsWith(applicationBaseUrl)) {
@@ -13,12 +13,11 @@ const handleRedirectUri = redirectUri => {
         logger.warning(`Ikke white listed redirect_uri '${redirectUri}'. Redirecter til '${loginRedirectStopped}'`);
         return loginRedirectStopped;
     }
-}
+};
 
-export const getRedirectUriFromQuery = ({request}) => handleRedirectUri(request.query.redirect_uri);
-export const getRedirectUriFromHeader = ({request}) => handleRedirectUri(request.headers.referer);
-export const setRedirectUriOnSession = ({request, redirectUri}) => {
+export const getRedirectUriFromQuery = ({ request }) => handleRedirectUri(request.query.redirect_uri);
+export const getRedirectUriFromHeader = ({ request }) => handleRedirectUri(request.headers.referer);
+export const setRedirectUriOnSession = ({ request, redirectUri }) => {
     request.session.redirect_uri = handleRedirectUri(redirectUri);
-} 
-export const getRedirectUriFromSession = ({request}) => handleRedirectUri(request.session.redirect_uri);
-
+};
+export const getRedirectUriFromSession = ({ request }) => handleRedirectUri(request.session.redirect_uri);

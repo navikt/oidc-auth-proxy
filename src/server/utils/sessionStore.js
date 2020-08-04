@@ -4,9 +4,10 @@ import url from 'url';
 import redis from 'redis';
 import { MemoryStore } from 'express-session';
 
-export const getSessionStore = session => {
-    if (url.parse(config.oidcAuthProxyBaseUrl).hostname.toLocaleLowerCase() === 'localhost') {
-        logger.warning("Kjører applikasjonen med Session Store In Memory.");
+export const getSessionStore = (session) => {
+    const hostname = url.parse(config.oidcAuthProxyBaseUrl).hostname.toLocaleLowerCase();
+    if (hostname === 'localhost' && hostname === '127.0.0.1') {
+        logger.warning('Kjører applikasjonen med Session Store In Memory.');
         return new MemoryStore();
     } else {
         logger.info("Initialiserer Redis Session Store.")

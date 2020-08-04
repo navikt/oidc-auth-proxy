@@ -20,16 +20,6 @@ fi
 
 if test -d /var/run/secrets/nais.io/azure;
 then
-    for FILE in /var/run/secrets/nais.io/azure/*
-    do
-        FILE_NAME=$(echo $FILE | sed 's:.*/::')
-        KEY=$(echo $FILE_NAME | tr '[:lower:]' '[:upper:]')
-        VALUE=$(cat "$FILE")
-
-        echo "- exporting $KEY"
-        export "$KEY"="$VALUE"
-    done
-
     FILE_NAME=/var/run/secrets/nais.io/azure/AZURE_APP_JWKS
     VALUE=$(cat $FILE_NAME | jq '.keys[0]')
 

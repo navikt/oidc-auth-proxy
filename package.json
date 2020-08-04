@@ -20,7 +20,7 @@
         "express": "^4.17.1",
         "express-http-proxy": "^1.6.0",
         "express-session": "^1.17.0",
-        "helmet": "^3.22.0",
+        "helmet": "^4.0.0",
         "jose": "^1.25.0",
         "openid-client": "^3.8.2",
         "redis": "^2.8.0",

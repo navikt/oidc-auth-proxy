@@ -14,42 +14,50 @@ import { loginRoutes } from './routes/login';
 import { logoutRoutes } from './routes/logout';
 import { meRoutes } from './routes/me';
 
-export default authClient => {
+export default (authClient) => {
     const server = express();
     const sessionStore = getSessionStore(session);
 
-    server.use(helmet({
-        frameguard: false
-    }));
-    server.use(cors({
-        origin: config.applicationBaseUrl,
-        credentials: true,
-        allowedHeaders: config.getCorsAllowedHeaders(),
-        exposedHeaders: config.getCorsExposedHeaders()
-    }));
-    
-    server.use(bodyParser.urlencoded({
-        extended: true
-    }));
+    server.use(
+        helmet({
+            frameguard: false,
+        })
+    );
+    server.use(
+        cors({
+            origin: config.applicationBaseUrl,
+            credentials: true,
+            allowedHeaders: config.getCorsAllowedHeaders(),
+            exposedHeaders: config.getCorsExposedHeaders(),
+        })
+    );
+
+    server.use(
+        bodyParser.urlencoded({
+            extended: true,
+        })
+    );
     server.set('trust proxy', 1);
 
-    server.use(session({
-        store: sessionStore,
-        name: config.sessionIdCookieName,
-        secret: config.sessionIdCookieSecrets,
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            maxAge: 3599000,
-            secure: config.sessionIdCookieSecure,
-            httpOnly: true
-        }
-    }));
+    server.use(
+        session({
+            store: sessionStore,
+            name: config.sessionIdCookieName,
+            secret: config.sessionIdCookieSecrets,
+            resave: false,
+            saveUninitialized: true,
+            cookie: {
+                maxAge: 3599000,
+                secure: config.sessionIdCookieSecure,
+                httpOnly: true,
+            },
+        })
+    );
 
-    config.proxyConfig.apis.forEach(api =>
+    config.proxyConfig.apis.forEach((api) =>
         server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
     );
-    
+
     callbackRoutes(server, authClient);
     loginRoutes(server, authClient);
     logoutRoutes(server);

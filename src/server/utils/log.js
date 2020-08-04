@@ -6,19 +6,16 @@ const stdoutLogger = winston.createLogger({
     level: 'info',
     transports: [
         new winston.transports.Console({
-            format: combine(
-                timestamp(),
-                json()
-            )
-        })
-    ]
+            format: combine(timestamp(), json()),
+        }),
+    ],
 });
 
-const info = msg => {
+const info = (msg) => {
     stdoutLogger.info(msg);
 };
 
-const warning = msg => {
+const warning = (msg) => {
     stdoutLogger.warn(msg);
 };
 
@@ -33,5 +30,5 @@ const error = (msg, err) => {
 module.exports = {
     info,
     warning,
-    error
+    error,
 };

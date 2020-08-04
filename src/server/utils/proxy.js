@@ -8,11 +8,11 @@ export const getProxyOptions = (api, authClient) => ({
     parseReqBody: false,
     filter: (request, response) => {
         logger.info(`Proxy URL ${api.url}.`);
-        const authenticated = isAuthenticated({request});
+        const authenticated = isAuthenticated({ request });
         logger.info(`Authenticated = ${authenticated}`);
         if (!authenticated) {
-            const redirectUri = getRedirectUriFromHeader({request});
-            const authorizationUrl = prepareAndGetAuthorizationUrl({request, authClient, redirectUri});
+            const redirectUri = getRedirectUriFromHeader({ request });
+            const authorizationUrl = prepareAndGetAuthorizationUrl({ request, authClient, redirectUri });
             response.header('Location', authorizationUrl);
             response.sendStatus(401);
         }
@@ -20,24 +20,27 @@ export const getProxyOptions = (api, authClient) => ({
     },
     proxyReqOptDecorator: (requestOptions, request) =>
         new Promise((resolve, reject) => {
-            getTokenOnBehalfOf({authClient, api, request}).then(
+            getTokenOnBehalfOf({ authClient, api, request }).then(
                 ({ token_type, access_token }) => {
-                    logger.info("Legger på Authorization header.");
+                    logger.info('Legger på Authorization header.');
                     requestOptions.headers['Authorization'] = `${token_type} ${access_token}`;
                     if (config.allowProxyToSelfSignedCertificates) {
                         requestOptions.rejectUnauthorized = false;
                     }
                     resolve(requestOptions);
                 },
-                error => reject(error)
+                (error) => reject(error)
             );
         }),
-    proxyReqPathResolver: function(request) {
-        const pathFromApi = (url.parse(api.url).pathname === '/' ? '' : url.parse(api.url).pathname);
+    proxyReqPathResolver: function (request) {
+        const pathFromApi = url.parse(api.url).pathname === '/' ? '' : url.parse(api.url).pathname;
         const pathFromRequest = request.params[0];
         const queryString = request.url.split('?')[1];
-        const newPath = (pathFromApi ? pathFromApi : '') + (pathFromRequest ? pathFromRequest : '') + (queryString ? '?' + queryString : '');
+        const newPath =
+            (pathFromApi ? pathFromApi : '') +
+            (pathFromRequest ? pathFromRequest : '') +
+            (queryString ? '?' + queryString : '');
         logger.info(`Proxy Path ${newPath}.`);
         return newPath;
-    }
+    },
 });

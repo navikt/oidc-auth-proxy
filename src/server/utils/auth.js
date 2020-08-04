@@ -1,11 +1,11 @@
 import { TokenSet } from 'openid-client';
-import config from "./config";
+import config from './config';
 import { generators } from 'openid-client';
 import { setRedirectUriOnSession } from './redirectUri';
 
-const self = "self"
+const self = 'self';
 
-export const getTokenSetsFromSession = ({request}) => {
+export const getTokenSetsFromSession = ({ request }) => {
     if (request && request.session) {
         return request.session.tokenSets;
     } else {
@@ -13,9 +13,9 @@ export const getTokenSetsFromSession = ({request}) => {
     }
 };
 
-export const isAuthenticated = ({request = null, tokenSets = null, id = self}) => {
+export const isAuthenticated = ({ request = null, tokenSets = null, id = self }) => {
     if (!tokenSets) {
-        tokenSets = getTokenSetsFromSession({request})
+        tokenSets = getTokenSetsFromSession({ request });
     }
     if (!tokenSets) {
         return false;
@@ -29,15 +29,15 @@ export const isAuthenticated = ({request = null, tokenSets = null, id = self}) =
     return new TokenSet(tokenSet).expired() === false;
 };
 
-export async function getTokenOnBehalfOf({authClient, api, request}) {
-    const tokenSets = getTokenSetsFromSession({request});
-    if (!isAuthenticated({tokenSets, id: api.id})) {
+export async function getTokenOnBehalfOf({ authClient, api, request }) {
+    const tokenSets = getTokenSetsFromSession({ request });
+    if (!isAuthenticated({ tokenSets, id: api.id })) {
         const onBehalfTokenSet = await authClient.grant({
             grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             requested_token_use: 'on_behalf_of',
             scope: api.scopes,
-            assertion: tokenSets[self].access_token
+            assertion: tokenSets[self].access_token,
         });
         request.session.tokenSets[api.id] = onBehalfTokenSet;
         return onBehalfTokenSet;
@@ -46,16 +46,16 @@ export async function getTokenOnBehalfOf({authClient, api, request}) {
     }
 }
 
-export function prepareAndGetAuthorizationUrl({request, authClient, redirectUri}) {
+export function prepareAndGetAuthorizationUrl({ request, authClient, redirectUri }) {
     request.session.nonce = generators.nonce();
     request.session.state = generators.state();
-    setRedirectUriOnSession({request, redirectUri});
+    setRedirectUriOnSession({ request, redirectUri });
     return authClient.authorizationUrl({
         response_mode: 'form_post',
         response_type: 'code',
         scope: config.loginScopes,
         redirect_uri: config.callbackUrl,
         nonce: request.session.nonce,
-        state: request.session.state
+        state: request.session.state,
     });
 }

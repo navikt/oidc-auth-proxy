@@ -2,8 +2,6 @@
 
 echo "Importing Azure credentials"
 
-FILE_NAME=NULL
-
 if test -d /var/run/secrets/nais.io/azuread;
 then
     for FILE in /var/run/secrets/nais.io/azuread/*
@@ -16,7 +14,6 @@ then
         export "$KEY"="$VALUE"
     done
 fi
-
 
 if test -d /var/run/secrets/nais.io/azure;
 then

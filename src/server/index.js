@@ -51,7 +51,8 @@ export default (authClient) => {
                 secure: config.sessionIdCookieSecure,
                 httpOnly: true,
                 sameSite: 'strict',
-                domain: config.cookieDomain
+                domain: config.cookieDomain,
+
             },
         })
     );

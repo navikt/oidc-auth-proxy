@@ -88,6 +88,7 @@ const getSessionIdCookieSecure = () => {
 const getRedisPassword = () => environmentVariable({ name: 'REDIS_PASSWORD', secret: true });
 const getRedisPort = () => environmentVariable({ name: 'REDIS_PORT' });
 const getRedisHost = () => environmentVariable({ name: 'REDIS_HOST' });
+const cookieDomain = () => environmentVariable({ name: 'COOKIE_DOMAIN' });
 const getCorsAllowedHeaders = () => {
     const value = environmentVariable({ name: 'CORS_ALLOWED_HEADERS', required: false });
     if (!value) return [];
@@ -107,6 +108,7 @@ module.exports = {
     applicationBaseUrl,
     sessionIdCookieSecrets,
     sessionIdCookieSecure: getSessionIdCookieSecure(),
+    cookieDomain,
     sessionIdCookieName,
     jwks: getJwks(),
     proxyConfig: getProxyConfig(),

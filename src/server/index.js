@@ -52,6 +52,7 @@ export default (authClient) => {
                 httpOnly: true,
                 sameSite: 'strict',
                 domain: config.cookieDomain,
+
             },
         })
     );

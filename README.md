@@ -53,6 +53,9 @@ Scopes som skal spørres om ved innlogging.
 
 Navnet på Session ID Cookie.
 
+### COOKIE_DOMAIN
+Domenet cookien skal gjelde for, for eksempel dev.adeo.no
+
 ### SESSION_ID_COOKIE_SIGN_SECRET
 
 Secret session id cookie signeres med (og verifiseres mot)

@@ -71,7 +71,6 @@ const callbackUrl = `${oidcAuthProxyBaseUrl}${callbackPath}`;
 const sessionIdCookieName = environmentVariable({ name: 'SESSION_ID_COOKIE_NAME' });
 const sessionIdCookieSignSecret = environmentVariable({ name: 'SESSION_ID_COOKIE_SIGN_SECRET', secret: true });
 const sessionIdCookieVerifySecret = environmentVariable({ name: 'SESSION_ID_COOKIE_VERIFY_SECRET', secret: true });
-const cookieDomain =  environmentVariable({ name: 'COOKIE_DOMAIN' });
 const sessionIdCookieSecrets = [sessionIdCookieSignSecret, sessionIdCookieVerifySecret];
 
 const getSessionIdCookieSecure = () => {
@@ -109,7 +108,6 @@ module.exports = {
     applicationBaseUrl,
     sessionIdCookieSecrets,
     sessionIdCookieSecure: getSessionIdCookieSecure(),
-    cookieDomain,
     sessionIdCookieName,
     jwks: getJwks(),
     proxyConfig: getProxyConfig(),

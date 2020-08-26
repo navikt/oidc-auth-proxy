@@ -50,8 +50,7 @@ export default (authClient) => {
                 maxAge: 3599000,
                 secure: config.sessionIdCookieSecure,
                 httpOnly: true,
-                sameSite: 'strict',
-                domain: config.cookieDomain,
+                sameSite: 'none',
             },
         })
     );

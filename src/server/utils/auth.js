@@ -2,8 +2,10 @@ import { TokenSet } from 'openid-client';
 import config from './config';
 import { generators } from 'openid-client';
 import { setRedirectUriOnSession } from './redirectUri';
+import logger from './log';
 
 const self = 'self';
+const tenSecondsInMilliseconds = 10000;
 
 export const getTokenSetsFromSession = ({ request }) => {
     if (request && request.session) {
@@ -47,8 +49,7 @@ export async function getTokenOnBehalfOf({ authClient, api, request }) {
 }
 
 export function prepareAndGetAuthorizationUrl({ request, authClient, redirectUri }) {
-    request.session.nonce = generators.nonce();
-    request.session.state = generators.state();
+    handleNonceAndStateOnSession({ request });
     setRedirectUriOnSession({ request, redirectUri });
     return authClient.authorizationUrl({
         response_mode: 'form_post',
@@ -58,4 +59,28 @@ export function prepareAndGetAuthorizationUrl({ request, authClient, redirectUri
         nonce: request.session.nonce,
         state: request.session.state,
     });
+}
+
+function handleNonceAndStateOnSession({ request }) {
+    const currentNonce = request.session.nonce;
+    const currentState = request.session.state;
+    const nonceAndStateSetAt = request.session.nonceAndStateSetAt;
+
+    if (!currentNonce || !currentState || !nonceAndStateSetAt) {
+        setNonceAndStateOnSession({ request });
+    }
+
+    const currentTimestamp = Date.now();
+
+    if ((currentTimestamp - nonceAndStateSetAt) < tenSecondsInMilliseconds) {
+        logger.info(`nonce & state satt for ${currentTimestamp - nonceAndStateSetAt}ms siden. Setter ikke nye.`);
+    } else {
+        setNonceAndStateOnSession({ request });
+    }
+}
+
+function setNonceAndStateOnSession({ request }) {
+    request.session.nonce = generators.nonce();
+    request.session.state = generators.state();
+    request.session.nonceAndStateSetAt = Date.now();
 }

@@ -84,3 +84,9 @@ function setNonceAndStateOnSession({ request }) {
     request.session.state = generators.state();
     request.session.nonceAndStateSetAt = Date.now();
 }
+
+export function clearNonceAndStateOnSession({ request }) {
+    request.session.nonce = null;
+    request.session.state = null;
+    request.nonceAndStateSetAt = null;
+}

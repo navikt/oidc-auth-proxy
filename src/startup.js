@@ -13,6 +13,7 @@ async function startApp() {
         startServer(client);
     } catch (error) {
         logger.error('Feil ved oppstart', error);
+        process.exit(1);
     }
 }
 

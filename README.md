@@ -84,35 +84,38 @@ Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 
+## Startup docker
+
+Dette starter både mock av azure & oidc-auth-proxy i docker.
+Bygger sistnevnte på nytt med eventuelle lokale endringer.
+
+Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/v2.0/.well-known/openid-configuration` med HTTP 200 JSON response fungerer alt som det skal.
+
+```
+cd startup-utils/
+./start-for-integration-tests.sh 
+```
+
+parametre som blir sendt med til `start-for-integration-tests.sh` sendes videre til docker-compose. F.eks `--detach` 
+
 ## Startup dev
 
-Endre på `apis` i preprod_env iht. hva du ønsker å teste (bl.a. må scopes endres). Deretter sette secrets;
+Dette starter kun mock av azure i docker, men oidc-auth-proxy i dev-mode
 
 ```
 npm install
-export JWK='{"kid": "set-the-rest"}'
-export SESSION_ID_COOKIE_SIGN_SECRET=fill-me
-export SESSION_ID_COOKIE_SIGN_SECRET=fill-me
-source preprod_env
+cd startup-utils/
+./start-for-local-dev.sh
+cd ..
 npm run start-dev
 ```
 
-## Startup dev med mocks
+Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/v2.0/.well-known/openid-configuration` med HTTP 200 JSON response fungerer alt som det skal.
 
-Dette starter `oidc-auth-proxy` på port `8081`, en dummy oidc-provider på port `8082`, et dummy api på `8083` og tar utgangspunkt i at du din app kjører på `localhost:8080`
+# Henvendelser
 
-```
-npm install
-npm run build-dev-with-mocks
-npm run start-dev-with-mocks
-```
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
 
-## Startup dist
+## For NAV-ansatte
 
-Sette config på ønsket måte.
-
-```
-npm install
-npm run build
-npm run start
-```
+Interne henvendelser kan sendes via Slack i kanalen #sif_omsorgspenger.

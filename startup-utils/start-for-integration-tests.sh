@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+bash ./create-env-file.sh .env azure-mock
+
 docker-compose down
 
 cd ..

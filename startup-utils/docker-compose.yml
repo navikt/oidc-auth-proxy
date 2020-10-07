@@ -14,7 +14,7 @@ services:
     ports:
       - "8101:8101"
     env_file:
-      - "./oidc-auth-proxy.env"
+      - "./.env"
     depends_on:
       - azure-mock
     mem_limit: 64m

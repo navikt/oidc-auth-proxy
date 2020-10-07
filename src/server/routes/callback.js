@@ -1,4 +1,5 @@
 import { getRedirectUriFromSession } from '../utils/redirectUri';
+import { clearNonceAndStateOnSession } from '../utils/auth';
 import config from '../utils/config';
 import logger from '../utils/log';
 
@@ -19,6 +20,7 @@ const callbackRoutes = (app, authClient) => {
                     req.session.tokenSets = {
                         [self]: tokenSet,
                     };
+                    clearNonceAndStateOnSession({ request: req });
                     res.redirect(getRedirectUriFromSession({ request: req }));
                 },
                 (error) => {

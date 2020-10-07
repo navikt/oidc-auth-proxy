@@ -11,6 +11,6 @@ npm run build
 rm -rf node_modules/
 npm install --only=production
 
-cd  integration-tests
+cd startup-utils
 
 docker-compose up --build "$@"

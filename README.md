@@ -84,7 +84,7 @@ Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 
-## Startup docker 
+## Startup docker
 
 Dette starter både mock av azure & oidc-auth-proxy i docker.
 Bygger sistnevnte på nytt med eventuelle lokale endringer.
@@ -96,6 +96,8 @@ cd startup-utils/
 ./start-for-integration-tests.sh 
 ```
 
+parametre som blir sendt med til `start-for-integration-tests.sh` sendes videre til docker-compose. F.eks `--detach` 
+
 ## Startup dev
 
 Dette starter kun mock av azure i docker, men oidc-auth-proxy i dev-mode
@@ -105,6 +107,15 @@ npm install
 cd startup-utils/
 ./start-for-local-dev.sh
 cd ..
-npm install
 npm run start-dev
 ```
+
+Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/v2.0/.well-known/openid-configuration` med HTTP 200 JSON response fungerer alt som det skal.
+
+# Henvendelser
+
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
+
+## For NAV-ansatte
+
+Interne henvendelser kan sendes via Slack i kanalen #sif_omsorgspenger.

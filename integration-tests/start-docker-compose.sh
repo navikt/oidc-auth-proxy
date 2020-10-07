@@ -11,4 +11,4 @@ npm install --only=production
 
 cd  integration-tests
 
-docker-compose up "$@"
+docker-compose up --build "$@"

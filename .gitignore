@@ -5,4 +5,4 @@ package-lock.json
 local_env
 dist/
 .DS_Store
-integration-tests/.env
+integration-tests/screenshots

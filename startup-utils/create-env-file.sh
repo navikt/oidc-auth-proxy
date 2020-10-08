@@ -9,7 +9,7 @@ echo JWK='{"kid": "test-cert", "kty":"RSA","n":"2g5WzL5yJESM55Sdy-r_uA5aJkwF_PPa
 echo DISCOVERY_URL="'http://$AZURE_HOST:8100/v2.0/.well-known/openid-configuration?name=Gizmo%20The%20Cat&user_id=1337'" >> $ENV_PATH
 echo LOGIN_SCOPES="'openid profile oidc-auth-proxy/.default'" >> $ENV_PATH
 echo OIDC_AUTH_PROXY_BASE_URL="'http://localhost:8101'" >> $ENV_PATH
-echo APPLICATION_BASE_URL="'http://localhost:8101/api/azure-mock/v2.0/.well-known/openid-configuration'" >> $ENV_PATH
+echo APPLICATION_BASE_URL="'http://localhost:8101/api/azure-mock/audience-check'" >> $ENV_PATH
 echo PROXY_CONFIG="'{\"apis\":[{\"path\":\"azure-mock\",\"url\":\"http://$AZURE_HOST:8100\",\"scopes\":\"azure-mock/.default\"}]}'" >> $ENV_PATH
 echo SESSION_ID_COOKIE_NAME='oidc-auth-proxy' >> $ENV_PATH
 echo SESSION_ID_COOKIE_SIGN_SECRET='foo' >> $ENV_PATH

@@ -18,7 +18,7 @@ Logger brukeren ut og returnerer 204
 
 ### GET /me
 
-Returnerer 200 JSON med `name` attributt satt til navnet på innlogget bruker (Krever at `profile` scope er satt ved innlogging, ellers returneres kun en tom JOSN).
+Returnerer 200 JSON med `name` attributt satt til navnet på innlogget bruker (Krever at `profile` scope er satt ved innlogging, ellers returneres kun en tom JSON).
 Returnerer 401 om brukeren ikke er logget inn.
 
 ## Config
@@ -89,7 +89,7 @@ En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `u
 Dette starter både mock av azure & oidc-auth-proxy i docker.
 Bygger sistnevnte på nytt med eventuelle lokale endringer.
 
-Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/v2.0/.well-known/openid-configuration` med HTTP 200 JSON response fungerer alt som det skal.
+Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/audience-check` med HTTP 200 response fungerer alt som det skal.
 
 ```
 cd startup-utils/
@@ -110,7 +110,7 @@ cd ..
 npm run start-dev
 ```
 
-Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/v2.0/.well-known/openid-configuration` med HTTP 200 JSON response fungerer alt som det skal.
+Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/audience-check` med HTTP 200 response fungerer alt som det skal.
 
 # Henvendelser
 

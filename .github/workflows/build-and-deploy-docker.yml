@@ -22,14 +22,17 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: '12.x'
-            - name: Installere alle dependencies
-              run: npm install
-            - name: Bygge Dist
-              run: npm run build
-            - name: Slette dependencies
-              run: rm -rf node_modules/
-            - name: Installere production dependencies
-              run: npm install --only=production
+            - name: Bygge app & kjøre integration tests
+              shell: bash
+              run: |
+                  cd startup-utils
+                  ./start-for-integration-tests.sh --detach
+                  cd ../integration-tests
+                  npm install
+                  npm run test
+                  cd ../startup-utils
+                  docker-compose down
+                  cd ..
             - name: Sette Docker- navn og tag
               env:
                   DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy

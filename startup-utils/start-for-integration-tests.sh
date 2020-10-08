@@ -3,6 +3,7 @@
 bash ./create-env-file.sh .env azure-mock
 
 docker-compose down
+docker-compose pull
 
 cd ..
 

@@ -85,6 +85,8 @@ const getSessionIdCookieSecure = () => {
     return secure;
 };
 
+const useInMemorySessionStore = () => environmentVariable({ name: 'USE_IN_MEMORY_SESSION_STORE', secret: false, required: false }) === 'true';
+
 const getRedisPassword = () => environmentVariable({ name: 'REDIS_PASSWORD', secret: true });
 const getRedisPort = () => environmentVariable({ name: 'REDIS_PORT' });
 const getRedisHost = () => environmentVariable({ name: 'REDIS_HOST' });
@@ -119,4 +121,5 @@ module.exports = {
     getRedisPassword,
     getCorsAllowedHeaders,
     getCorsExposedHeaders,
+    useInMemorySessionStore,
 };

@@ -17,5 +17,6 @@ echo SESSION_ID_COOKIE_VERIFY_SECRET='bar' >> $ENV_PATH
 echo ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES='true' >> $ENV_PATH
 echo CORS_ALLOWED_HEADERS='Content-Type,Referer' >> $ENV_PATH
 echo CORS_EXPOSED_HEADERS='Location' >> $ENV_PATH
+echo USE_IN_MEMORY_SESSION_STORE='true' >> $ENV_PATH
 
 echo ".env fil opprettet @ $ENV_PATH med azure host $AZURE_HOST"

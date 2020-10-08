@@ -7,6 +7,7 @@ docker-compose pull -q
 
 cd ..
 
+rm -rf dist/
 npm install
 npm run build
 rm -rf node_modules/

@@ -25,6 +25,7 @@ jobs:
             - name: Bygge app & kjøre integration tests
               shell: bash
               run: |
+                  docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
                   cd startup-utils
                   ./start-for-integration-tests.sh --detach
                   cd ../integration-tests
@@ -33,6 +34,8 @@ jobs:
                   cd ../startup-utils
                   docker-compose down
                   cd ..
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - name: Sette Docker- navn og tag
               env:
                   DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy

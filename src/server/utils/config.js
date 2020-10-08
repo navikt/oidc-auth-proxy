@@ -64,8 +64,8 @@ const loginScopes = environmentVariable({ name: 'LOGIN_SCOPES' });
 const discoveryUrl = environmentVariable({ name: 'DISCOVERY_URL' });
 const oidcAuthProxyBaseUrl = environmentVariable({ name: 'OIDC_AUTH_PROXY_BASE_URL' });
 const applicationBaseUrl = environmentVariable({ name: 'APPLICATION_BASE_URL' });
-const allowProxyToSelfSignedCertificates =
-    environmentVariable({ name: 'ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES' }).toLowerCase() === 'true';
+const allowProxyToSelfSignedCertificates = 
+    environmentVariable({ name: 'ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES', required: false }) === 'false'
 const callbackPath = '/oidc/callback';
 const callbackUrl = `${oidcAuthProxyBaseUrl}${callbackPath}`;
 const sessionIdCookieName = environmentVariable({ name: 'SESSION_ID_COOKIE_NAME' });
@@ -85,7 +85,7 @@ const getSessionIdCookieSecure = () => {
     return secure;
 };
 
-const useInMemorySessionStore = () => environmentVariable({ name: 'USE_IN_MEMORY_SESSION_STORE', secret: false, required: false }) === 'true';
+const useInMemorySessionStore = () => environmentVariable({ name: 'USE_IN_MEMORY_SESSION_STORE', required: false }) === 'true';
 
 const getRedisPassword = () => environmentVariable({ name: 'REDIS_PASSWORD', secret: true });
 const getRedisPort = () => environmentVariable({ name: 'REDIS_PORT' });

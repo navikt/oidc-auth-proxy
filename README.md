@@ -67,6 +67,8 @@ Proxy som benyttes mot oidc provider (optional.)
 
 ### ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES
 
+Default `false`. Støtte for å sette true  vil fjernes ved neste major oppdaterting.
+
 Om settes til `true` vil det tillates at proxyen fungerer som proxy mot tjenester med selvsignerte TLS sertifikater.
 Alle andre verdier vil føre til feil ved proxy request til tjenester med selvsignerte TLS sertifikater
 

@@ -15,9 +15,9 @@ async function runTests() {
         .src(['./tests/*.js'])
         .browsers(['chrome:headless'])
         .run({
-            selectorTimeout: 1000,
-            assertionTimeout: 1000,
-            pageLoadTimeout: 1000,
+            selectorTimeout: 3000,
+            assertionTimeout: 3000,
+            pageLoadTimeout: 3000,
             screenshots: {
                 takeOnFails: true,
             },

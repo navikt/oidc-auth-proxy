@@ -16,6 +16,8 @@ echo SESSION_ID_COOKIE_SIGN_SECRET='foo' >> $ENV_PATH
 echo SESSION_ID_COOKIE_VERIFY_SECRET='bar' >> $ENV_PATH
 echo CORS_ALLOWED_HEADERS='Content-Type,Referer' >> $ENV_PATH
 echo CORS_EXPOSED_HEADERS='Location' >> $ENV_PATH
-echo USE_IN_MEMORY_SESSION_STORE='true' >> $ENV_PATH
+echo REDIS_HOST='redis' >> $ENV_PATH
+echo REDIS_PORT='6379' >> $ENV_PATH
+echo REDIS_PASSWORD='foobar' >> $ENV_PATH
 
 echo ".env fil opprettet @ $ENV_PATH med azure host $AZURE_HOST"

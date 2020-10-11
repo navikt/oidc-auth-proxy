@@ -48,9 +48,9 @@ export default (authClient) => {
             saveUninitialized: true,
             cookie: {
                 maxAge: 3599000,
-                secure: config.sessionIdCookieSecure,
+                secure: config.sessionIdCookieProperties.secure,
                 httpOnly: true,
-                sameSite: 'none',
+                sameSite: config.sessionIdCookieProperties.sameSite,
             },
         })
     );

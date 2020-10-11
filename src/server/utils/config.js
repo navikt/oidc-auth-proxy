@@ -73,16 +73,30 @@ const sessionIdCookieSignSecret = environmentVariable({ name: 'SESSION_ID_COOKIE
 const sessionIdCookieVerifySecret = environmentVariable({ name: 'SESSION_ID_COOKIE_VERIFY_SECRET', secret: true });
 const sessionIdCookieSecrets = [sessionIdCookieSignSecret, sessionIdCookieVerifySecret];
 
-const getSessionIdCookieSecure = () => {
-    const secure =
+const getSessionIdCookieProperties = () => {
+    const https =
         applicationBaseUrl.toLocaleLowerCase().startsWith('https') &&
         oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith('https');
-    if (secure) {
-        logger.info('SecureCookie=true');
-    } else {
-        logger.warning('SecureCookie=false');
+    
+    // Defualtverdier. Ved bruk av Strict/Lax mister vi cookie ved innloggingsflyt mot Azure.
+    // sameSite=true fungerer kun om secure=true. Derfor bruker vi ved kjøring lokalt
+    // secure=false & sameSite=strict
+    
+    var secure = true;
+    var sameSite = 'none';
+
+    if (!https) {
+        secure = false;
+        sameSite = 'strict';
     }
-    return secure;
+
+    logger.info(`SessionIdCookie[secure]=${secure}`);
+    logger.info(`SessionIdCookie[sameSite]=${sameSite}`);
+
+    return {
+        secure: secure,
+        sameSite: sameSite
+    };
 };
 
 const useInMemorySessionStore = () => environmentVariable({ name: 'USE_IN_MEMORY_SESSION_STORE', required: false }) === 'true';
@@ -109,7 +123,7 @@ module.exports = {
     oidcAuthProxyBaseUrl,
     applicationBaseUrl,
     sessionIdCookieSecrets,
-    sessionIdCookieSecure: getSessionIdCookieSecure(),
+    sessionIdCookieProperties: getSessionIdCookieProperties(),
     sessionIdCookieName,
     jwks: getJwks(),
     proxyConfig: getProxyConfig(),

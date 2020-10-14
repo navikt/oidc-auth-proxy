@@ -5,6 +5,19 @@ Håndterer OIDC-innlogging, samt veksling til korrekt `on_behalf_of`- access tok
 
 Når det kreves en ny innlogging fra brukeren vil proxyen gi en 401 error med `Location` header satt til hvor brukeren må redirectes for å gjøre innloggingen. Dette for at applikasjonen skal få mulighet til å lagre unna eventuell state før man redirecter til login.
 
+## GCP
+
+### Opprette kubernetes secret
+```
+kubectl create secret generic <min-secret> -n <mitt-team> from-literal=SESSION_ID_COOKIE_SIGN_SECRET=<min-sign-secret> --from-literal= SESSION_ID_COOKIE_VERIFY_SECRET=<min-verify-secret>
+```
+
+### Bruke secret i naiserator 
+```
+  envFrom:
+    - secret: <min-secret>
+```
+
 ## End points
 
 ### GET /login?redirect_uri=

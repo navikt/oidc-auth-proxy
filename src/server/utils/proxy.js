@@ -1,4 +1,4 @@
-import { getTokenOnBehalfOf, isAuthenticated, prepareAndGetAuthorizationUrl } from './auth';
+import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import config from './config';
 import logger from './log';
 import url from 'url';
@@ -12,8 +12,7 @@ export const getProxyOptions = (api, authClient) => ({
         logger.info(`Authenticated = ${authenticated}`);
         if (!authenticated) {
             const redirectUri = getRedirectUriFromHeader({ request });
-            const authorizationUrl = prepareAndGetAuthorizationUrl({ request, authClient, redirectUri });
-            response.header('Location', authorizationUrl);
+            response.header('Location', `${config.oidcAuthProxyBaseUrl}/login?redirect_uri=${redirectUri}`);
             response.sendStatus(401);
         }
         return authenticated;

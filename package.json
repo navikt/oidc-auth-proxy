@@ -18,7 +18,7 @@
         "express-http-proxy": "^1.6.2",
         "express-session": "^1.17.1",
         "helmet": "^4.1.1",
-        "jose": "^2.0.2",
+        "jose": "^3.1.0",
         "openid-client": "^4.2.0",
         "redis": "^3.0.2",
         "regenerator-runtime": "^0.13.7",

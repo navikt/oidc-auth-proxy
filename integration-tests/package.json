@@ -11,10 +11,10 @@
   "author": "NAV",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/node": "^7.12.6",
-    "@babel/preset-env": "^7.12.7",
-    "nodemon": "^2.0.6",
-    "testcafe": "^1.7.1"
+    "@babel/core": "^7.12.10",
+    "@babel/node": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "nodemon": "^2.0.7",
+    "testcafe": "^1.10.1"
   }
 }

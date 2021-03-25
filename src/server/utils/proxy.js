@@ -5,8 +5,8 @@ import url from 'url';
 import { getRedirectUriFromHeader } from './redirectUri';
 import { ulid } from 'ulid'
 
-const CorrelationId = 'X-Correlation-ID';
-const Timestamp = 'X-Timestamp';
+const CorrelationId = 'x-correlation-id';
+const Timestamp = 'x-timestamp';
 
 export const getProxyOptions = (api, authClient) => ({
     parseReqBody: false,

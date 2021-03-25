@@ -36,4 +36,5 @@ module.exports = {
     info,
     warning,
     error,
+    logger: stdoutLogger
 };

@@ -1,8 +1,12 @@
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import config from './config';
-import logger from './log';
+import { logger } from './log';
 import url from 'url';
 import { getRedirectUriFromHeader } from './redirectUri';
+import { ulid } from 'ulid'
+
+const CorrelationId = 'X-Correlation-ID';
+const Timestamp = 'X-Timestamp';
 
 export const getProxyOptions = (api, authClient) => ({
     parseReqBody: false,
@@ -18,8 +22,14 @@ export const getProxyOptions = (api, authClient) => ({
         }
         return authenticated;
     },
-    proxyReqOptDecorator: (requestOptions, request) =>
-        new Promise((resolve, reject) => {
+    proxyReqOptDecorator: function(requestOptions, request) {
+        if (request.headers[CorrelationId]) {
+            requestOptions.headers[CorrelationId] = request.headers[CorrelationId];
+        } else {
+            requestOptions.headers[CorrelationId] = ulid();
+        }
+        requestOptions.headers[Timestamp] = Date.now();
+        return new Promise((resolve, reject) => {
             getTokenOnBehalfOf({ authClient, api, request }).then(
                 ({ token_type, access_token }) => {
                     logger.debug('Legger på Authorization header.');
@@ -31,7 +41,8 @@ export const getProxyOptions = (api, authClient) => ({
                 },
                 (error) => reject(error)
             );
-        }),
+        })
+    },
     proxyReqPathResolver: function (request) {
         const pathFromApi = url.parse(api.url).pathname === '/' ? '' : url.parse(api.url).pathname;
         const pathFromRequest = request.params[0];
@@ -43,13 +54,15 @@ export const getProxyOptions = (api, authClient) => ({
         logger.debug(`Proxy Path ${newPath}.`);
         return newPath;
     },
-    userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+    userResHeaderDecorator: function(headers, userReq, userRes, proxyReq, proxyRes) {
         const statusCode = proxyRes.statusCode;
-        const melding = `${statusCode} ${proxyRes.statusMessage}: ${userReq.method} - ${userReq.originalUrl}`;
+        const requestTime = Date.now() - proxyReq.getHeader(Timestamp);
+        const melding = `${statusCode} ${proxyRes.statusMessage}: ${userReq.method} - ${userReq.originalUrl} (${requestTime}ms)`;
+        const correlationId = proxyReq.getHeader(CorrelationId);
         if (statusCode >= 500) {
-            logger.error(melding);
+            logger.error(melding, {correlation_id: correlationId});
         } else {
-            logger.info(melding);
+            logger.info(melding, {correlation_id: correlationId});
         }
         return headers;
     },

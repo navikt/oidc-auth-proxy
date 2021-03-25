@@ -1,10 +1,10 @@
-name: Build pull request
+name: Build and run integration tests
 
 on: [pull_request]
 
 jobs:
     docker:
-        name: Laste opp docker image
+        name: Build and run integration tests
         runs-on: ubuntu-latest
         steps:
             - name: Hente kode

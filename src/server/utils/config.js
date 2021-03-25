@@ -107,8 +107,8 @@ const getRedisHost = () => environmentVariable({ name: 'REDIS_HOST' });
 
 const getCorsAllowedHeaders = () => {
     const value = environmentVariable({ name: 'CORS_ALLOWED_HEADERS', required: false });
-    if (!value) return [];
-    else return value;
+    if (!value) return 'x-correlation-id';
+    else return `${value},x-correlation-id`;
 };
 const getCorsExposedHeaders = () => {
     const value = environmentVariable({ name: 'CORS_EXPOSED_HEADERS', required: false });

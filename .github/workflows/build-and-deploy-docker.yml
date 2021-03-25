@@ -1,4 +1,4 @@
-name: Build and deploy Docker
+name: Build and deploy Docker Image
 
 on:
     push:
@@ -13,7 +13,7 @@ on:
 
 jobs:
     docker:
-        name: Laste opp docker image
+        name: Build and deploy Docker Image
         runs-on: ubuntu-latest
         steps:
             - name: Hente kode
@@ -21,7 +21,7 @@ jobs:
             - name: Sette opp Node
               uses: actions/setup-node@v1
               with:
-                  node-version: '12.x'
+                  node-version: '15.x'
             - name: Bygge app & kjøre integration tests
               shell: bash
               run: |

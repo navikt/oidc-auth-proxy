@@ -11,6 +11,10 @@ const stdoutLogger = winston.createLogger({
     ],
 });
 
+const debug = (msg) => {
+    stdoutLogger.debug(msg);
+};
+
 const info = (msg) => {
     stdoutLogger.info(msg);
 };
@@ -28,6 +32,7 @@ const error = (msg, err) => {
 };
 
 module.exports = {
+    debug,
     info,
     warning,
     error,

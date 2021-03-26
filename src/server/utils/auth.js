@@ -40,7 +40,7 @@ export async function getTokenOnBehalfOf({ authClient, api, request }) {
             requested_token_use: 'on_behalf_of',
             scope: api.scopes,
             assertion: tokenSets[self].access_token,
-        });
+        }, {clientAssertionPayload: {aud: authClient.issuer.metadata['token_endpoint']}});
         request.session.tokenSets[api.id] = onBehalfTokenSet;
         return onBehalfTokenSet;
     } else {

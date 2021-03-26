@@ -13,7 +13,7 @@ const callbackRoutes = (app, authClient) => {
                 code_verifier: authorizationCode,
                 nonce: req.session.nonce,
                 state: req.session.state,
-            })
+            }, {clientAssertionPayload: {aud: authClient.issuer.metadata['token_endpoint']}})
             .then(
                 (tokenSet) => {
                     req.session.tokenSets = {

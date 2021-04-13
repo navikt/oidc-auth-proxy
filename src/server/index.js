@@ -6,6 +6,7 @@ import proxy from 'express-http-proxy';
 import cors from 'cors';
 import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
+import { WebSocketProxy } from './utils/wsProxy';
 import config from './utils/config';
 import k8sRoutes from './routes/k8s';
 import logger from './utils/log';
@@ -39,25 +40,31 @@ export default (authClient) => {
     );
     server.set('trust proxy', 1);
 
-    server.use(
-        session({
-            store: sessionStore,
-            name: config.sessionIdCookieName,
-            secret: config.sessionIdCookieSecrets,
-            resave: false,
-            saveUninitialized: true,
-            cookie: {
-                maxAge: 3599000,
-                secure: config.sessionIdCookieProperties.secure,
-                httpOnly: true,
-                sameSite: config.sessionIdCookieProperties.sameSite,
-            },
-        })
-    );
+    const sessionParser = session({
+        store: sessionStore,
+        name: config.sessionIdCookieName,
+        secret: config.sessionIdCookieSecrets,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 3599000,
+            secure: config.sessionIdCookieProperties.secure,
+            httpOnly: true,
+            sameSite: config.sessionIdCookieProperties.sameSite,
+        },
+    });
 
-    config.proxyConfig.apis.forEach((api) =>
-        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)))
-    );
+    server.use(sessionParser);
+
+    const webSocketProxy = new WebSocketProxy(authClient);
+
+    config.proxyConfig.apis.forEach((api) => {
+        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)));
+        const webSocket = webSocketProxy.leggTil({api});
+        if (webSocket) {
+            server.use(webSocket.path, webSocket.middleware);
+        }
+    });
 
     callbackRoutes(server, authClient);
     loginRoutes(server, authClient);
@@ -66,7 +73,12 @@ export default (authClient) => {
     k8sRoutes(server);
 
     const port = process.env.PORT || 8080;
+
     server.listen(port, () => {
         logger.info(`Lytter på port ${port}`);
-    });
+    }).on('upgrade', async function (request, socket, head) {
+        sessionParser(request, {}, async() => {
+            webSocketProxy.handleUpgrade({request, socket, head});
+        });
+    });   
 };

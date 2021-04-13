@@ -1,8 +1,6 @@
 import { logger } from './log';
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-//import config from './config';
-
 
 const getWsProxyOptions = (api, webSocketPath) => {
     const pathRewrites = {};
@@ -14,11 +12,15 @@ const getWsProxyOptions = (api, webSocketPath) => {
      return {
         target: target,
         ws: true,
-        //ssl: !config.allowProxyToSelfSignedCertificates, // TODO: Gir feil v/kjøring a tester..
+        secure: true,
         pathRewrite: pathRewrites,
+        logLevel: 'debug',
         logProvider: () => logger,
         onProxyReqWs: (proxyReq, request) => {
-            logger.debug("onProxyReqWs");
+            logger.info(`onProxyReqWs, authenticated=${isAuthenticated({request})}`);
+        },
+        onError: (error, request, response) => {
+            logger.error(`onError, error=${error.message}`);
         }
     }
 };

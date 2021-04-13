@@ -1,7 +1,7 @@
 version: '2'
 services:
   azure-mock:
-    image: docker.pkg.github.com/navikt/azure-mock/azure-mock:latest
+    image: ghcr.io/navikt/azure-mock:latest
     container_name: azure-mock
     restart: on-failure
     ports:

@@ -5,7 +5,7 @@ on:
         paths-ignore:
             - '**.md'
             - '.gitignore'
-            - 'LICENCE'
+            - 'LICENSE'
             - 'CODEOWNERS'
             - 'test/**'
         branches:
@@ -39,9 +39,11 @@ jobs:
             - name: Sette Docker- navn og tag
               env:
                   DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
+                  DOCKER_IMAGE_GH: ghcr.io/${{ github.repository }}
               run: |
                   echo $DOCKER_IMAGE > .docker_image
                   echo "$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" > .docker_tag
+                  echo "TAG=$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
             - name: Bygge Docker image
               run: docker build . --pull -t $(cat .docker_image):$(cat .docker_tag)
             - name: Laste opp Docker image
@@ -50,5 +52,9 @@ jobs:
                   docker push $(cat .docker_image):$(cat .docker_tag)
                   docker tag $(cat .docker_image):$(cat .docker_tag) $(cat .docker_image):latest
                   docker push $(cat .docker_image):latest
+                  docker build --pull --tag ${DOCKER_IMAGE_GH}:${TAG} --tag ${DOCKER_IMAGE_GH}:latest .
+                  echo ${GITHUB_TOKEN} | docker login --username ${GITHUB_REPOSITORY} --password-stdin ghcr.io
+                  docker push ${DOCKER_IMAGE_GH}:${TAG}
+                  docker push ${DOCKER_IMAGE_GH}:latest
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

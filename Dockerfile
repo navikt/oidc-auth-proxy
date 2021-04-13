@@ -1,5 +1,6 @@
 FROM navikt/common:0.1 AS navikt-common
 FROM node:alpine
+LABEL org.opencontainers.image.source=https://github.com/navikt/oidc-auth-proxy
 
 COPY --from=navikt-common /init-scripts /init-scripts
 COPY --from=navikt-common /entrypoint.sh /entrypoint.sh

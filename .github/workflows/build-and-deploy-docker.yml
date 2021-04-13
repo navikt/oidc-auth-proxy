@@ -42,9 +42,12 @@ jobs:
           docker-compose down
           cd ..
 
-      - name: Bygg & last opp Docker image
+      - name: Sette Docker variabler
         run: |
           echo "TAG=$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Bygg & last opp Docker image
+        run: |
           docker build . --pull -t ${DOCKER_IMAGE}:${TAG}
           echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${DOCKER_IMAGE}:${TAG}

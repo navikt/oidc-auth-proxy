@@ -8,8 +8,11 @@ const getWsProxyOptions = (api, webSocketPath) => {
     const pathRewrites = {};
     pathRewrites[webSocketPath] = '/ws';
 
+    const target = new URL(api.url).origin;
+    logger.info(`WebSocket skrudd på for ${api.path}: ${webSocketPath} -> ${target}/ws`);
+
      return {
-        target: api.url,
+        target: target,
         ws: true,
         //ssl: !config.allowProxyToSelfSignedCertificates, // TODO: Gir feil v/kjøring a tester..
         pathRewrite: pathRewrites,

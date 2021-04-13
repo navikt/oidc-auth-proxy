@@ -1,7 +1,7 @@
 import { logger } from './log';
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import config from './config';
+//import config from './config';
 
 
 const getWsProxyOptions = (api, webSocketPath) => {

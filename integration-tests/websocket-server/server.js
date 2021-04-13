@@ -13,16 +13,13 @@ const wss = new WebSocket.Server({
  });
 
 wss.on('connection', function connection(ws, req) {
-    console.log(req.headers);
     const authorizationHeader = req.headers['authorization'];
     var audience;
     if (!authorizationHeader) {
         audience = "authorization header ikke satt."
     } else {
         const jwt = authorizationHeader.replace("Bearer ", "");
-        console.log(jwt);
         const decodedJwt = jwt_decode(jwt);
-        console.log(decodedJwt.aud);
         audience = decodedJwt.aud;
     }
     ws.on('message', function incoming(data) {

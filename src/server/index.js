@@ -6,7 +6,7 @@ import proxy from 'express-http-proxy';
 import cors from 'cors';
 import callbackRoutes from './routes/callback';
 import { getProxyOptions } from './utils/proxy';
-import { getWsProxyOptions, WebSocketProxy } from './utils/wsProxy';
+import { WebSocketProxy } from './utils/wsProxy';
 import config from './utils/config';
 import k8sRoutes from './routes/k8s';
 import logger from './utils/log';
@@ -14,7 +14,6 @@ import { getSessionStore } from './utils/sessionStore';
 import { loginRoutes } from './routes/login';
 import { logoutRoutes } from './routes/logout';
 import { meRoutes } from './routes/me';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 
 export default (authClient) => {
     const server = express();

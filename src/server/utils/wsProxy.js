@@ -2,25 +2,16 @@ import { logger } from './log';
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
-const getWsTarget = (apiUrl) => {
-    const url = new URL(apiUrl);
-    var protocol = 'wss:';
-    if (url.protocol === 'http:') {
-        protocol = 'ws:';
-    }
-    return `${protocol}//${url.host}`;
-}
+const getWsProxyOptions = (api, webSocketProxyPath) => {
+    const webSocketUrl = new URL(api.webSocketUrl);
 
-const getWsProxyOptions = (api, webSocketPath) => {
     const pathRewrites = {};
-    pathRewrites[webSocketPath] = '/ws';
-
-    const target = getWsTarget(api.url);
+    pathRewrites[webSocketProxyPath] = webSocketUrl.pathname;
     
-    logger.info(`WebSocket skrudd på for ${api.path}: ${webSocketPath} -> ${target}/ws`);
+    logger.info(`WebSocket skrudd på for ${api.path}: ${webSocketProxyPath} -> ${webSocketUrl}`);
 
      return {
-        target: target,
+        target: webSocketUrl.origin,
         ws: true,
         secure: true,
         pathRewrite: pathRewrites,
@@ -42,8 +33,7 @@ class WebSocketProxy {
     }
 
     leggTil({api}) {
-        if (api.enableWebSocket) {
-            logger.info(`WebSocket skrudd på for ${api.path}`);
+        if (api.webSocketUrl) {
             const path = `/ws/${api.path}`;
             const middleware = createProxyMiddleware(getWsProxyOptions(api, path));
             this.proxies[path] = {
@@ -55,7 +45,7 @@ class WebSocketProxy {
                 path: path
             };
          } else {
-             logger.info(`WebSocket ikke skurdd på for ${api.path}`);
+             logger.info(`WebSocket ikke skrudd på for ${api.path}`);
              return null;
          }
     }

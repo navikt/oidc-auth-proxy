@@ -2,11 +2,21 @@ import { logger } from './log';
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
+const getWsTarget = (apiUrl) => {
+    const url = new URL(apiUrl);
+    var protocol = 'wss:';
+    if (url.protocol === 'http:') {
+        protocol = 'ws:';
+    }
+    return `${protocol}//${url.host}`;
+}
+
 const getWsProxyOptions = (api, webSocketPath) => {
     const pathRewrites = {};
     pathRewrites[webSocketPath] = '/ws';
 
-    const target = new URL(api.url).origin;
+    const target = getWsTarget(api.url);
+    
     logger.info(`WebSocket skrudd på for ${api.path}: ${webSocketPath} -> ${target}/ws`);
 
      return {

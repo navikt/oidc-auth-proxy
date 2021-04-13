@@ -1,60 +1,56 @@
 name: Build and deploy Docker Image
 
 on:
-    push:
-        paths-ignore:
-            - '**.md'
-            - '.gitignore'
-            - 'LICENSE'
-            - 'CODEOWNERS'
-            - 'test/**'
-        branches:
-            - master
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'CODEOWNERS'
+      - 'test/**'
+    branches:
+      - master
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
+  DOCKER_IMAGE_GH: ghcr.io/${{ github.repository }}
 
 jobs:
-    docker:
-        name: Build and deploy Docker Image
-        runs-on: ubuntu-latest
-        steps:
-            - name: Hente kode
-              uses: actions/checkout@v1
-            - name: Sette opp Node
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '15.x'
-            - name: Bygge app & kjøre integration tests
-              shell: bash
-              run: |
-                  docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-                  cd startup-utils
-                  ./start-for-integration-tests.sh --detach
-                  cd ../integration-tests
-                  npm install
-                  npm run test
-                  cd ../startup-utils
-                  docker-compose down
-                  cd ..
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            - name: Sette Docker- navn og tag
-              env:
-                  DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
-                  DOCKER_IMAGE_GH: ghcr.io/${{ github.repository }}
-              run: |
-                  echo $DOCKER_IMAGE > .docker_image
-                  echo "$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" > .docker_tag
-                  echo "TAG=$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-            - name: Bygge Docker image
-              run: docker build . --pull -t $(cat .docker_image):$(cat .docker_tag)
-            - name: Laste opp Docker image
-              run: |
-                  docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-                  docker push $(cat .docker_image):$(cat .docker_tag)
-                  docker tag $(cat .docker_image):$(cat .docker_tag) $(cat .docker_image):latest
-                  docker push $(cat .docker_image):latest
-                  docker build --pull --tag ${DOCKER_IMAGE_GH}:${TAG} --tag ${DOCKER_IMAGE_GH}:latest .
-                  echo ${GITHUB_TOKEN} | docker login --username ${GITHUB_REPOSITORY} --password-stdin ghcr.io
-                  docker push ${DOCKER_IMAGE_GH}:${TAG}
-                  docker push ${DOCKER_IMAGE_GH}:latest
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  docker:
+    name: Build and deploy Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hente kode
+        uses: actions/checkout@v1
+
+      - name: Sette opp Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '15.x'
+
+      - name: Bygge app & kjøre integration tests
+        shell: bash
+        run: |
+          echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          cd startup-utils
+          ./start-for-integration-tests.sh --detach
+          cd ../integration-tests
+          npm install
+          npm run test
+          cd ../startup-utils
+          docker-compose down
+          cd ..
+
+      - name: Bygg & last opp Docker image
+        run: |
+          echo "TAG=$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          docker build . --pull -t ${DOCKER_IMAGE}:${TAG}
+          echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${DOCKER_IMAGE}:${TAG}
+          docker tag ${DOCKER_IMAGE}:${TAG} ${DOCKER_IMAGE}:latest
+          docker push ${DOCKER_IMAGE}:latest
+          docker build --pull --tag ${DOCKER_IMAGE_GH}:${TAG} --tag ${DOCKER_IMAGE_GH}:latest .
+          echo ${GITHUB_TOKEN} | docker login --username ${GITHUB_REPOSITORY} --password-stdin ghcr.io
+          docker push ${DOCKER_IMAGE_GH}:${TAG}
+          docker push ${DOCKER_IMAGE_GH}:latest

@@ -1,24 +1,27 @@
 import { logger } from './log';
 import { getTokenOnBehalfOf, isAuthenticated } from './auth';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-//import config from './config';
 
+const getWsProxyOptions = (api, webSocketProxyPath) => {
+    const webSocketUrl = new URL(api.webSocketUrl);
 
-const getWsProxyOptions = (api, webSocketPath) => {
     const pathRewrites = {};
-    pathRewrites[webSocketPath] = '/ws';
-
-    const target = new URL(api.url).origin;
-    logger.info(`WebSocket skrudd på for ${api.path}: ${webSocketPath} -> ${target}/ws`);
+    pathRewrites[webSocketProxyPath] = webSocketUrl.pathname;
+    
+    logger.info(`WebSocket skrudd på for ${api.path}: ${webSocketProxyPath} -> ${webSocketUrl}`);
 
      return {
-        target: target,
+        target: webSocketUrl.origin,
         ws: true,
-        //ssl: !config.allowProxyToSelfSignedCertificates, // TODO: Gir feil v/kjøring a tester..
+        secure: true,
         pathRewrite: pathRewrites,
+        logLevel: 'debug',
         logProvider: () => logger,
         onProxyReqWs: (proxyReq, request) => {
-            logger.debug("onProxyReqWs");
+            logger.info(`onProxyReqWs, authenticated=${isAuthenticated({request})}`);
+        },
+        onError: (error, request, response) => {
+            logger.error(`onError, error=${error.message}`);
         }
     }
 };
@@ -30,8 +33,7 @@ class WebSocketProxy {
     }
 
     leggTil({api}) {
-        if (api.enableWebSocket) {
-            logger.info(`WebSocket skrudd på for ${api.path}`);
+        if (api.webSocketUrl) {
             const path = `/ws/${api.path}`;
             const middleware = createProxyMiddleware(getWsProxyOptions(api, path));
             this.proxies[path] = {
@@ -43,7 +45,7 @@ class WebSocketProxy {
                 path: path
             };
          } else {
-             logger.info(`WebSocket ikke skurdd på for ${api.path}`);
+             logger.info(`WebSocket ikke skrudd på for ${api.path}`);
              return null;
          }
     }

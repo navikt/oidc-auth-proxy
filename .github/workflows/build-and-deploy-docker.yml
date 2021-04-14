@@ -31,7 +31,7 @@ jobs:
       - name: Bygge app & kjøre integration tests
         shell: bash
         run: |
-          echo ${GITHUB_TOKEN} | docker login --username ${GITHUB_REPOSITORY} --password-stdin ghcr.io
+          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
           cd startup-utils
           ./start-for-integration-tests.sh --detach
           cd ../integration-tests

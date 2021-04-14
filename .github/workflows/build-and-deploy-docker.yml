@@ -13,8 +13,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  DOCKER_IMAGE: docker.pkg.github.com/${{ github.repository }}/oidc-auth-proxy
-  DOCKER_IMAGE_GH: ghcr.io/${{ github.repository }}
+  BASE_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
   docker:
@@ -48,12 +47,7 @@ jobs:
 
       - name: Bygg & last opp Docker image
         run: |
-          docker build . --pull -t ${DOCKER_IMAGE}:${TAG}
-          echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
-          docker push ${DOCKER_IMAGE}:${TAG}
-          docker tag ${DOCKER_IMAGE}:${TAG} ${DOCKER_IMAGE}:latest
-          docker push ${DOCKER_IMAGE}:latest
-          docker build --pull --tag ${DOCKER_IMAGE_GH}:${TAG} --tag ${DOCKER_IMAGE_GH}:latest .
-          echo ${GITHUB_TOKEN} | docker login --username ${GITHUB_REPOSITORY} --password-stdin ghcr.io
-          docker push ${DOCKER_IMAGE_GH}:${TAG}
-          docker push ${DOCKER_IMAGE_GH}:latest
+          docker build --pull --tag ${BASE_IMAGE}:${TAG} --tag ${BASE_IMAGE}:latest .
+          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${BASE_IMAGE}:${TAG}
+          docker push ${BASE_IMAGE}:latest

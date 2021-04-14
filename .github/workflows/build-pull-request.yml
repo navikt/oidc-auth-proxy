@@ -1,6 +1,6 @@
 name: Build and run integration tests
 
-on: [ pull_request ]
+on: [pull_request]
 
 jobs:
   docker:

@@ -8,8 +8,9 @@ COPY --from=navikt-common /dumb-init /dumb-init
 
 COPY docker/start-node-server.sh /run-script.sh
 COPY docker/import-azure-credentials.sh /init-scripts/20-import-azure-credentials.sh
+COPY docker/import-idporten-credentials.sh /init-scripts/21-import-idporten-credentials.sh
 
-RUN chmod +x /entrypoint.sh /run-script.sh /init-scripts/20-import-azure-credentials.sh
+RUN chmod +x /entrypoint.sh /run-script.sh /init-scripts/20-import-azure-credentials.sh /init-scripts/21-import-idporten-credentials.sh
 RUN apk add jq
 
 COPY dist ./dist

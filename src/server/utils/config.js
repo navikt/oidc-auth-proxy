@@ -1,4 +1,5 @@
 import logger from './log';
+import {convertJsonToAuthorizationParameters} from "./authUtils";
 
 const environmentVariable = ({ name, secret = false, required = true }) => {
     if (!process.env[name] && required) {
@@ -13,9 +14,15 @@ const environmentVariable = ({ name, secret = false, required = true }) => {
     return process.env[name];
 };
 
-const environmentVariableAsJson = ({ name, secret = false }) => {
+const environmentVariableAsJson = ({ name, secret = false, required = true }) => {
+
+    let env = environmentVariable({ name, secret, required });
+    if (!env && !required) {
+        logger.info(`Valgfri environment variable '${name}'.`);
+        return undefined
+    }
     try {
-        return JSON.parse(environmentVariable({ name, secret }));
+        return JSON.parse(env);
     } catch (error) {
         logger.error(`Environment variable '${name}' er ikke et gyldig JSON-objekt.`, error);
         process.exit(1);
@@ -57,6 +64,17 @@ const getProxyConfig = () => {
         entry.id = `api-${index}`;
     });
     return config;
+};
+
+const getAdditionalAuthorizationParameters = () => {
+    let additionalAuthorizationParametersJson = environmentVariableAsJson(
+        {
+            name: 'ADDITIONAL_AUTHORIZATION_PARAMETERS',
+            secret: false,
+            required: false
+        });
+
+    return convertJsonToAuthorizationParameters(additionalAuthorizationParametersJson)
 };
 
 const clientId = environmentVariable({ name: 'CLIENT_ID' });
@@ -127,6 +145,7 @@ module.exports = {
     sessionIdCookieName,
     jwks: getJwks(),
     proxyConfig: getProxyConfig(),
+    additionalAuthorizationParameters: getAdditionalAuthorizationParameters(),
     callbackPath,
     callbackUrl,
     allowProxyToSelfSignedCertificates,

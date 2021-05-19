@@ -99,6 +99,14 @@ Inneholder listen `apis` som blir tilgjengeliggjort på `/api/{path}*` og dekker
 
 En entry i `apis` inneholder `path` for hvor api'et skal tilgjengeliggjøres, `url` for hvor requesten skal forwardes og `scopes` som er de scopene et access token trenger for å kunne nå dette api'et.
 
+### ADDITIONAL_AUTHORIZATION_PARAMETERS
+
+Valgfri. Benyttes ved behov for ytterligere parametere i authorization-kallet. \
+(Ved idporten-integrasjon må authorzation-kallet inneholde parameteren `resource` for at tokenet skal inneholde `aud`) \
+På JSON-format. Feks `{"resource": "nav.no"}` 
+
+NB: Denne vil ikke overskrive eksisterende parametre, kun legge til om de ikke finnes.
+
 ## Startup docker
 
 Dette starter både mock av azure & oidc-auth-proxy i docker.

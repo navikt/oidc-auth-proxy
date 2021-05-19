@@ -51,14 +51,14 @@ export async function getTokenOnBehalfOf({ authClient, api, request }) {
 export function prepareAndGetAuthorizationUrl({ request, authClient, redirectUri }) {
     handleNonceAndStateOnSession({ request });
     setRedirectUriOnSession({ request, redirectUri });
-    return authClient.authorizationUrl({
-        response_mode: 'form_post',
-        response_type: 'code',
-        scope: config.loginScopes,
-        redirect_uri: config.callbackUrl,
-        nonce: request.session.nonce,
-        state: request.session.state,
-    });
+    const authorizationParameters = getAuthorizationParameters(
+        config.additionalAuthorizationParameters,
+        config.loginScopes,
+        config.callbackUrl,
+        request.session.nonce,
+        request.session.state,
+    )
+    return authClient.authorizationUrl(authorizationParameters);
 }
 
 function handleNonceAndStateOnSession({ request }) {

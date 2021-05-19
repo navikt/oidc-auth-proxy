@@ -57,7 +57,7 @@ export function prepareAndGetAuthorizationUrl({ request, authClient, redirectUri
         config.callbackUrl,
         request.session.nonce,
         request.session.state,
-    )
+    );
     return authClient.authorizationUrl(authorizationParameters);
 }
 

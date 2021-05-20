@@ -1,6 +1,4 @@
-import {convertJsonToAuthorizationParameters} from "./authUtils";
-
-const {getAuthorizationParameters} = require("./authUtils");
+import {getAuthorizationParameters} from "./authUtils";
 
 describe("getAuthorizationParameters", () => {
     const originalScope = "original scopes"
@@ -9,10 +7,10 @@ describe("getAuthorizationParameters", () => {
     const originalState = "state1234"
 
     it("should append new parameters", () => {
-        const additionalParameters = {
-            resource: "nav.no",
-            additionalPropertyThatDontExist: "tull001"
-        }
+        const additionalParameters = JSON.parse(`{
+            "resource": "nav.no",
+            "additionalPropertyThatDontExist": "tull001"
+        }`)
 
         const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
 
@@ -20,17 +18,23 @@ describe("getAuthorizationParameters", () => {
         expect(allParameters.additionalPropertyThatDontExist).toBe("tull001"); // Possible since AuthorizationParameters accepts other properties: [key: string]: unknown;
     });
 
-    it("should contain original parameters", () => {
-        const additionalParameters = {}
+    it("should contain original parameters when additionalParameters is undefined", () => {
+        const additionalParameters = undefined
 
         const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
 
         expect(allParameters.response_mode).toBe("form_post");
         expect(allParameters.response_type).toBe("code");
+        expect(allParameters.scope).toBe(originalScope);
+        expect(allParameters.redirect_uri).toBe(originalRedirectUri);
+        expect(allParameters.state).toBe(originalState);
+        expect(allParameters.nonce).toBe(originalNonce);
     });
 
-    it("should handle undefined", () => {
-        const allParameters = getAuthorizationParameters(undefined, originalScope, originalRedirectUri, originalNonce, originalState);
+    it("should contain original parameters when additionalParameters is empty", () => {
+        const additionalParameters = JSON.parse(`{}`)
+
+        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
 
         expect(allParameters.response_mode).toBe("form_post");
         expect(allParameters.response_type).toBe("code");
@@ -41,14 +45,14 @@ describe("getAuthorizationParameters", () => {
     });
 
     it("should not override existing properties", () => {
-        const additionalParameters = {
-            response_mode: 'new responseMode',
-            response_type: 'new responseType',
-            scope: 'new scopes',
-            redirect_uri: "new redirectUri",
-            nonce: "new nonce",
-            state: "new state",
-        }
+        const additionalParameters = JSON.parse(`{
+            "response_mode": "new responseMode",
+            "response_type": "new responseType",
+            "scope": "new scopes",
+            "redirect_uri": "new redirectUri",
+            "nonce": "new nonce",
+            "state": "new state"
+        }`)
 
         const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
 
@@ -58,24 +62,5 @@ describe("getAuthorizationParameters", () => {
         expect(allParameters.redirect_uri).toBe(originalRedirectUri);
         expect(allParameters.state).toBe(originalState);
         expect(allParameters.nonce).toBe(originalNonce);
-    });
-});
-
-describe("convertJsonToAuthorizationParameters", () => {
-    it("should convert json to AuthorizationParameter with resource", () => {
-        const json = `
-        {
-            "resource": "nav.no"
-        }`
-
-        let authorizationParameters = convertJsonToAuthorizationParameters(json);
-
-        expect(authorizationParameters.resource).toBe("nav.no");
-    });
-
-    it("should convert undefined", () => {
-        let authorizationParameters = convertJsonToAuthorizationParameters(undefined);
-
-        expect(authorizationParameters.resource).toBe(undefined);
     });
 });

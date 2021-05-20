@@ -11,9 +11,3 @@ export const getAuthorizationParameters = (additionalAuthorizationParameters, sc
     // If additionalParameters should override originalParameters then this should be reordered: {...originalAuthorizationParameters, ...config.additionalAuthorizationParameters};
     return {...additionalAuthorizationParameters, ...originalAuthorizationParameters};
 };
-
-export const convertJsonToAuthorizationParameters = additionalAuthorizationParametersJson => {
-    if (!additionalAuthorizationParametersJson) return {}
-
-    return JSON.parse(additionalAuthorizationParametersJson);
-};

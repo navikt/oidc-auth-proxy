@@ -3,6 +3,7 @@ import config from './config';
 import { generators } from 'openid-client';
 import { setRedirectUriOnSession } from './redirectUri';
 import logger from './log';
+import { getAuthorizationParameters} from './authUtils';
 
 const self = 'self';
 const tenSecondsInMilliseconds = 10000;

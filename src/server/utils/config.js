@@ -1,5 +1,4 @@
 import logger from './log';
-import {convertJsonToAuthorizationParameters} from "./authUtils";
 
 const environmentVariable = ({ name, secret = false, required = true }) => {
     if (!process.env[name] && required) {
@@ -18,7 +17,7 @@ const environmentVariableAsJson = ({ name, secret = false, required = true }) =>
 
     let env = environmentVariable({ name, secret, required });
     if (!env && !required) {
-        logger.info(`Valgfri environment variable '${name}'.`);
+        logger.info(`Valgfri environment variable '${name}' er ikke satt.`);
         return undefined
     }
     try {
@@ -67,14 +66,12 @@ const getProxyConfig = () => {
 };
 
 const getAdditionalAuthorizationParameters = () => {
-    let additionalAuthorizationParametersJson = environmentVariableAsJson(
+    return environmentVariableAsJson(
         {
             name: 'ADDITIONAL_AUTHORIZATION_PARAMETERS',
             secret: false,
             required: false
         });
-
-    return convertJsonToAuthorizationParameters(additionalAuthorizationParametersJson)
 };
 
 const clientId = environmentVariable({ name: 'CLIENT_ID' });

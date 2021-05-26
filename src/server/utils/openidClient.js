@@ -1,12 +1,13 @@
-import config from './config';
 import { httpProxy } from './httpProxy';
 import { Issuer, custom } from 'openid-client';
 import logger from './log';
 
-const metadata = {
-    client_id: config.clientId,
-    token_endpoint_auth_method: 'private_key_jwt',
-    token_endpoint_auth_signing_alg: 'RS256',
+const metadata = (clientId) => {
+    return {
+        client_id: clientId,
+        token_endpoint_auth_method: 'private_key_jwt',
+        token_endpoint_auth_signing_alg: 'RS256',
+    };
 };
 
 export function configureHttpProxy() {
@@ -20,10 +21,10 @@ export function configureHttpProxy() {
     }
 }
 
-export async function buildIssuer() {
-    return Issuer.discover(config.discoveryUrl);
+export async function buildIssuer(discoveryUrl) {
+    return Issuer.discover(discoveryUrl);
 }
 
-export function buildClient(issuer) {
-    return new issuer.Client(metadata, config.jwks);
+export function buildClient(issuer, clientId, jwks) {
+    return new issuer.Client(metadata(clientId), jwks);
 }

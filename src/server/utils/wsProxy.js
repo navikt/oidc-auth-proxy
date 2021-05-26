@@ -27,8 +27,8 @@ const getWsProxyOptions = (api, webSocketProxyPath) => {
 };
 
 class WebSocketProxy {
-    constructor(authClient) {
-        this.authClient = authClient;
+    constructor(tokenExchangeClient) {
+        this.tokenExchangeClient = tokenExchangeClient;
         this.proxies = {};
     }
 
@@ -59,7 +59,7 @@ class WebSocketProxy {
             if (upgradeWebSocket && proxy) {
                 if (authenticated) {
                     logger.info(`Authenticated WebSocket upgrade.`);
-                    getTokenOnBehalfOf({ authClient: this.authClient, api: proxy.api, request }).then(
+                    getTokenOnBehalfOf({ tokenExchangeClient: this.tokenExchangeClient, api: proxy.api, request }).then(
                         ({ token_type, access_token }) => {
                             request.headers['Authorization'] = `${token_type} ${access_token}`;
                             proxy.upgrade(request, socket, head)

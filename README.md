@@ -107,6 +107,34 @@ På JSON-format. Feks `{"resource": "nav.no"}`
 
 NB: Denne vil ikke overskrive eksisterende parametre, kun legge til om de ikke finnes.
 
+### TOKEN_EXCHANGE_CLIENT_ID
+
+Valgfri. Default = `CLIENT_ID`.  
+Settes dersom token-exchange skal gjøres med en annen klient enn autentiserings-flyten.  
+Dette er nødvendig ved brukerautentisering via `Idporten`, fordi token-exhange løsningen ikke er så god, så NAIS har laget en egen løsning med navn `TokenX`. 
+Blir importert direkte ved bruk av `TokenX`.
+
+### TOKEN_EXCHANGE_DISCOVERY_URL
+
+Valgfri. Default = `DISCOVERY_URL`.  
+Settes dersom token-exchange skal gjøres med en annen klient enn autentiserings-flyten.  
+Dette er nødvendig ved brukerautentisering via `Idporten`, fordi token-exhange løsningen ikke er så god, så NAIS har laget en egen løsning med navn `TokenX`.
+Blir importert direkte ved bruk av `TokenX`.
+
+### TOKEN_EXCHANGE_JWK
+
+Valgfri. Default = `JWK`.  
+Settes dersom token-exchange skal gjøres med en annen klient enn autentiserings-flyten.  
+Dette er nødvendig ved brukerautentisering via `Idporten`, fordi token-exhange løsningen ikke er så god, så NAIS har laget en egen løsning med navn `TokenX`.
+Blir importert direkte ved bruk av `TokenX`.
+
+
+### TOKEN_EXCHANGE_GRANT_TYPE
+
+Valgfri. Default = `urn:ietf:params:oauth:grant-type:jwt-bearer`.  
+Settes for å overskrive `grant_type` som brukes ved token-exchange.  
+Ved bruk av `TokenX` bør denne settes til `urn:ietf:params:oauth:grant-type:token-exchange`
+
 ## Startup docker
 
 Dette starter både mock av azure & oidc-auth-proxy i docker.
@@ -134,6 +162,69 @@ npm run start-dev
 ```
 
 Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/audience-check` med HTTP 200 response fungerer alt som det skal.
+
+## Ved lokal kjøring mot Idporten eller AzureAd direkte: 
+Ved kjøring lokalt kan man bruke [disse TestKlientene](https://security.labs.nais.io/pages/utvikling/lokalt.html#testklienter). 
+De er registrert i AzureAd og Idporten med `http://localhost:3000/oauth2/callback` som tillat redirectUri. 
+Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:   
+1. Oppdater og legg til nødvendige miljøvariabler i `startup-utils/create-env-files.sh`
+   <details>
+   <summary>Forslag til miljøvariabler som bør endres eller legges til:</summary> 
+   
+   #### AzureAd:
+   ```
+   echo CLIENT_ID='<test-app-1_AZURE_APP_CLIENT_ID>' >> $ENV_PATH
+   echo JWK='<test-app-1_AZURE_APP_JWKS>' >> $ENV_PATH
+   echo DISCOVERY_URL="'<test-app-1_AZURE_APP_WELL_KNOWN_URL>'" >> $ENV_PATH
+   echo LOGIN_SCOPES="'openid profile <test-app-1_AZURE_APP_CLIENT_ID>/.default'" >> $ENV_PATH
+   echo PROXY_CONFIG="'{\"apis\":[{\"path\":\"<BACKEND_PATH>\",\"url\":\"<BACKEND_URL>",\"scopes\":\"<test-app-2_AZURE_APP_CLIENT_ID>>/.default\"}]}'" >> $ENV_PATH
+   echo OIDC_AUTH_PROXY_BASE_URL="'http://localhost:3000'" >> $ENV_PATH
+   echo APPLICATION_BASE_URL="'http://localhost:3005'" >> $ENV_PATH
+   ```
+   * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
+   * Variabler som starter på `<test-app-...>` byttes ut med verdiene til TestKlientene. \
+     Merk `<test-app-1_AZURE_APP_JWKS>` skal være uten `keys[]`. 
+   
+   #### Idporten:
+   ```
+   echo CLIENT_ID='<IDPORTEN_CLIENT_ID>' >> $ENV_PATH
+   echo JWK='<IDPORTEN_CLIENT_JWK>' >> $ENV_PATH
+   echo DISCOVERY_URL="'<IDPORTEN_WELL_KNOWN_URL>'" >> $ENV_PATH
+   echo LOGIN_SCOPES="'openid profile'" >> $ENV_PATH
+   
+   echo TOKEN_EXCHANGE_CLIENT_ID='<din-frontend_TOKEN_X_CLIENT_ID>' >> $ENV_PATH
+   echo TOKEN_EXCHANGE_DISCOVERY_URL="'<din-frontend_TOKEN_X_WELL_KNOWN_URL>'" >> $ENV_PATH
+   echo TOKEN_EXCHANGE_JWK='<din-frontend_TOKEN_X_PRIVATE_JWK>' >> $ENV_PATH
+   echo PROXY_CONFIG="'{\"apis\":[{\"path\":\"<BACKEND_PATH>\",\"url\":\"<BACKEND_URL>",\"scopes\":\"<din-backend_TOKEN_X_CLIENT_ID>\"}]}'" >> $ENV_PATH
+ 
+   echo TOKEN_EXCHANGE_GRANT_TYPE= "'urn:ietf:params:oauth:grant-type:token-exchange'" >> $ENV_PATH
+   echo ADDITIONAL_AUTHORIZATION_PARAMETERS= "'{\"resource\": \"https://nav.no\"}'" >> $ENV_PATH
+   echo OIDC_AUTH_PROXY_BASE_URL="'http://localhost:3000'" >> $ENV_PATH
+   echo APPLICATION_BASE_URL="'http://localhost:3005'" >> $ENV_PATH
+   ```
+   * Variabler som starter på `<IDPORTEN-...>` byttes ut med verdiene til TestKlienten. 
+   * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
+   * Variabler som starter på `<din-...>` byttes ut med verdier til de kjørende poddene du har i miljø. \
+     (Det finnes ingen testklient for TokenX)
+   </details>
+   <br>
+1. Rename alle forekomster av `/oidc/callback` til `/oauth2/callback`. Det er kun denne pathen som er registrert.
+1. Endre `services.oidc-auth-proxy.ports` i `startup-utils/docker-compose.yml` til: 
+   ```
+     - "3000:8101"
+   ```
+   Det kun er `localhost:3000` som er registrert, derfor endres porten fra `8101` til `3000`.
+1. Oppdater `config.js` slik at sessionIdCookie har disse verdiene:
+   ```
+   secure = false;
+   sameSite = 'none';
+   ```
+   NB: Dette fungerer ikke i `Chrome`. Bruk `Firefox` isteden. 
+1. Kjør opp med docker-compose: 
+   ```
+   cd startup-utils/
+   ./start-for-integration-tests.sh
+   ```
 
 # Henvendelser
 

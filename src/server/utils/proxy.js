@@ -8,7 +8,7 @@ import { ulid } from 'ulid'
 const CorrelationId = 'x-correlation-id';
 const Timestamp = 'x-timestamp';
 
-export const getProxyOptions = (api, authClient) => ({
+export const getProxyOptions = (api, tokenExchangeClient) => ({
     parseReqBody: false,
     filter: (request, response) => {
         logger.debug(`Proxy URL ${api.url}.`);
@@ -30,7 +30,7 @@ export const getProxyOptions = (api, authClient) => ({
         }
         requestOptions.headers[Timestamp] = Date.now();
         return new Promise((resolve, reject) => {
-            getTokenOnBehalfOf({ authClient, api, request }).then(
+            getTokenOnBehalfOf({ tokenExchangeClient, api, request }).then(
                 ({ token_type, access_token }) => {
                     logger.debug('Legger på Authorization header.');
                     requestOptions.headers['Authorization'] = `${token_type} ${access_token}`;

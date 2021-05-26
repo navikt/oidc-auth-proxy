@@ -15,7 +15,7 @@ import { loginRoutes } from './routes/login';
 import { logoutRoutes } from './routes/logout';
 import { meRoutes } from './routes/me';
 
-export default (authClient) => {
+export default (authClient, tokenExchangeClient) => {
     const server = express();
     const sessionStore = getSessionStore(session);
 
@@ -56,10 +56,10 @@ export default (authClient) => {
 
     server.use(sessionParser);
 
-    const webSocketProxy = new WebSocketProxy(authClient);
+    const webSocketProxy = new WebSocketProxy(tokenExchangeClient);
 
     config.proxyConfig.apis.forEach((api) => {
-        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)));
+        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, tokenExchangeClient)));
         const webSocket = webSocketProxy.leggTil({api});
         if (webSocket) {
             server.use(webSocket.path, webSocket.middleware);

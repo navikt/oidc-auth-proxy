@@ -28,8 +28,12 @@ const environmentVariableAsJson = ({ name, secret = false, required = true }) =>
     }
 };
 
-const getJwks = () => {
-    var jwk = environmentVariableAsJson({ name: 'JWK', secret: true });
+const getJwks = (envName, required= true) => {
+    var jwk = environmentVariableAsJson({ name: envName, secret: true, required: required });
+    if (!jwk && !required) {
+        logger.info(`Valgfri jwks environment variable '${envName}' er ikke satt.`);
+        return undefined;
+    }
     if (!jwk.kid) {
         logger.error(`Environment variable 'JWK' mangler 'kid' claim.`);
         process.exit(1);
@@ -65,18 +69,20 @@ const getProxyConfig = () => {
     return config;
 };
 
-const getAdditionalAuthorizationParameters = () => {
-    return environmentVariableAsJson(
-        {
-            name: 'ADDITIONAL_AUTHORIZATION_PARAMETERS',
-            secret: false,
-            required: false
-        });
-};
-
+// AuthClient specific
 const clientId = environmentVariable({ name: 'CLIENT_ID' });
 const loginScopes = environmentVariable({ name: 'LOGIN_SCOPES' });
 const discoveryUrl = environmentVariable({ name: 'DISCOVERY_URL' });
+const jwks = getJwks('JWK');
+
+// TokenExchangeClient spesific - If not set: TokenExhangeClient = AuthClient
+const tokenExchangeClientId = environmentVariable({ name: 'TOKEN_EXCHANGE_CLIENT_ID', secret: false, required: false }) || clientId;
+const tokenExchangeDiscoveryUrl = environmentVariable({ name: 'TOKEN_EXCHANGE_DISCOVERY_URL', secret: false, required: false }) || discoveryUrl;
+const tokenExchangeJwks = getJwks('TOKEN_EXCHANGE_JWK', false) || jwks;
+const tokenExchangeGrantType = environmentVariable({ name: 'TOKEN_EXCHANGE_GRANT_TYPE', secret: false, required: false }) || "urn:ietf:params:oauth:grant-type:jwt-bearer";
+
+// Others
+const additionalAuthorizationParameters = environmentVariableAsJson({ name: 'ADDITIONAL_AUTHORIZATION_PARAMETERS', secret: false, required: false });
 const oidcAuthProxyBaseUrl = environmentVariable({ name: 'OIDC_AUTH_PROXY_BASE_URL' });
 const applicationBaseUrl = environmentVariable({ name: 'APPLICATION_BASE_URL' });
 const allowProxyToSelfSignedCertificates = 
@@ -93,9 +99,9 @@ const getSessionIdCookieProperties = () => {
         applicationBaseUrl.toLocaleLowerCase().startsWith('https') &&
         oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith('https');
     
-    // Defualtverdier. Ved bruk av Strict/Lax mister vi cookie ved innloggingsflyt mot Azure.
-    // sameSite=true fungerer kun om secure=true. Derfor bruker vi ved kjøring lokalt
-    // secure=false & sameSite=strict
+    // Defualtverdier. Ved bruk av Strict/Lax mister vi cookie ved innloggingsflyt mot Azure og Idporten.
+    // Chrome tillater ikke sameSite=none om secure=false. (Men det fungerer for firefox)
+    // Derfor bruker vi ved kjøring lokalt secure=false & sameSite=strict
     
     var secure = true;
     var sameSite = 'none';
@@ -135,14 +141,18 @@ module.exports = {
     clientId,
     loginScopes,
     discoveryUrl,
+    jwks,
+    tokenExchangeClientId,
+    tokenExchangeDiscoveryUrl,
+    tokenExchangeJwks,
+    tokenExchangeGrantType,
+    additionalAuthorizationParameters,
     oidcAuthProxyBaseUrl,
     applicationBaseUrl,
     sessionIdCookieSecrets,
     sessionIdCookieProperties: getSessionIdCookieProperties(),
     sessionIdCookieName,
-    jwks: getJwks(),
     proxyConfig: getProxyConfig(),
-    additionalAuthorizationParameters: getAdditionalAuthorizationParameters(),
     callbackPath,
     callbackUrl,
     allowProxyToSelfSignedCertificates,

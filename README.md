@@ -184,7 +184,7 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
    * Variabler som starter på `<test-app-...>` byttes ut med verdiene til **_TestKlientene_** 
      (se lenke i ingress, i dag ligger disse verdiene i vault). \
-     Merk `<test-app-1_AZURE_APP_JWKS>` skal være uten `keys[]`. 
+     Merk `<test-app-1_AZURE_APP_JWKS>` skal være uten wrapperen `keys[]`. 
    
    #### Idporten:
    ```

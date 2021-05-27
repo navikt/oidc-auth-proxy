@@ -222,12 +222,15 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    sameSite = 'none';
    ```
    (Dette ligger inni !https if'en)
-   NB: Dette fungerer ikke i `Chrome`. Bruk `Firefox` isteden. 
+   NB: Dette fungerer ikke i `Chrome`. Bruk `Firefox` isteden.
+1. Pass på at frontenden din kjører på `localhost:3005` (eller endre på `APPLICATION_BASE_URL`)  
+   og går mot oidc-auth-proxy på `localhost:3000`.
 1. Kjør opp med docker-compose: 
    ```
    cd startup-utils/
    ./start-for-integration-tests.sh
    ```
+   Husk å bruke Firefox!
 
 # Henvendelser
 

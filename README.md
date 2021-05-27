@@ -177,12 +177,13 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    echo JWK='<test-app-1_AZURE_APP_JWKS>' >> $ENV_PATH
    echo DISCOVERY_URL="'<test-app-1_AZURE_APP_WELL_KNOWN_URL>'" >> $ENV_PATH
    echo LOGIN_SCOPES="'openid profile <test-app-1_AZURE_APP_CLIENT_ID>/.default'" >> $ENV_PATH
-   echo PROXY_CONFIG="'{\"apis\":[{\"path\":\"<BACKEND_PATH>\",\"url\":\"<BACKEND_URL>",\"scopes\":\"<test-app-2_AZURE_APP_CLIENT_ID>>/.default\"}]}'" >> $ENV_PATH
+   echo PROXY_CONFIG="'{\"apis\":[{\"path\":\"<BACKEND_PATH>\",\"url\":\"<BACKEND_URL>\",\"scopes\":\"<test-app-2_AZURE_APP_CLIENT_ID>/.default\"}]}'" >> $ENV_PATH
    echo OIDC_AUTH_PROXY_BASE_URL="'http://localhost:3000'" >> $ENV_PATH
    echo APPLICATION_BASE_URL="'http://localhost:3005'" >> $ENV_PATH
    ```
    * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
-   * Variabler som starter på `<test-app-...>` byttes ut med verdiene til **_TestKlientene_** (se lenke i ingress). \
+   * Variabler som starter på `<test-app-...>` byttes ut med verdiene til **_TestKlientene_** 
+     (se lenke i ingress, i dag ligger disse verdiene i vault). \
      Merk `<test-app-1_AZURE_APP_JWKS>` skal være uten `keys[]`. 
    
    #### Idporten:
@@ -202,7 +203,8 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    echo OIDC_AUTH_PROXY_BASE_URL="'http://localhost:3000'" >> $ENV_PATH
    echo APPLICATION_BASE_URL="'http://localhost:3005'" >> $ENV_PATH
    ```
-   * Variabler som starter på `<IDPORTEN-...>` byttes ut med verdiene til _**TestKlienten**_ (se lenke i ingress). 
+   * Variabler som starter på `<IDPORTEN-...>` byttes ut med verdiene til _**TestKlienten**_ 
+     (se lenke i ingress, i dag ligger disse verdiene i vault). 
    * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
    * Variabler som starter på `<din-...>` byttes ut med verdier til de kjørende poddene du har i miljø. \
      (Det finnes ingen testklient for TokenX)

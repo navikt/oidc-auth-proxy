@@ -174,7 +174,7 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    #### AzureAd:
    ```
    echo CLIENT_ID='<test-app-1_AZURE_APP_CLIENT_ID>' >> $ENV_PATH
-   echo JWK='<test-app-1_AZURE_APP_JWKS>' >> $ENV_PATH
+   echo JWK='<test-app-1_AZURE_APP_JWK>' >> $ENV_PATH
    echo DISCOVERY_URL="'<test-app-1_AZURE_APP_WELL_KNOWN_URL>'" >> $ENV_PATH
    echo LOGIN_SCOPES="'openid profile <test-app-1_AZURE_APP_CLIENT_ID>/.default'" >> $ENV_PATH
    echo PROXY_CONFIG="'{\"apis\":[{\"path\":\"<BACKEND_PATH>\",\"url\":\"<BACKEND_URL>\",\"scopes\":\"<test-app-2_AZURE_APP_CLIENT_ID>/.default\"}]}'" >> $ENV_PATH
@@ -184,7 +184,7 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
    * Variabler som starter på `<test-app-...>` byttes ut med verdiene til **_TestKlientene_** 
      (se lenke i ingress, i dag ligger disse verdiene i vault). \
-     Merk `<test-app-1_AZURE_APP_JWKS>` skal være uten wrapperen `keys[]`. 
+     (Merk `<test-app-1_AZURE_APP_JWK>` skal være uten wrapperen `keys[]`.) 
    
    #### Idporten:
    ```

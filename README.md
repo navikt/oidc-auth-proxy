@@ -164,7 +164,7 @@ npm run start-dev
 Om man ved åpning av `http://localhost:8101/login` havner på `http://localhost:8101/api/azure-mock/audience-check` med HTTP 200 response fungerer alt som det skal.
 
 ## Ved lokal kjøring mot Idporten eller AzureAd direkte: 
-Ved kjøring lokalt kan man bruke [disse TestKlientene](https://security.labs.nais.io/pages/utvikling/lokalt.html#testklienter). 
+Ved kjøring lokalt kan man bruke [disse **_TestKlientene_**](https://security.labs.nais.io/pages/utvikling/lokalt.html#testklienter). 
 De er registrert i AzureAd og Idporten med `http://localhost:3000/oauth2/callback` som tillat redirectUri. 
 Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:   
 1. Oppdater og legg til nødvendige miljøvariabler i `startup-utils/create-env-files.sh`
@@ -182,7 +182,7 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    echo APPLICATION_BASE_URL="'http://localhost:3005'" >> $ENV_PATH
    ```
    * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
-   * Variabler som starter på `<test-app-...>` byttes ut med verdiene til TestKlientene. \
+   * Variabler som starter på `<test-app-...>` byttes ut med verdiene til **_TestKlientene_** (se lenke i ingress). \
      Merk `<test-app-1_AZURE_APP_JWKS>` skal være uten `keys[]`. 
    
    #### Idporten:
@@ -202,13 +202,13 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    echo OIDC_AUTH_PROXY_BASE_URL="'http://localhost:3000'" >> $ENV_PATH
    echo APPLICATION_BASE_URL="'http://localhost:3005'" >> $ENV_PATH
    ```
-   * Variabler som starter på `<IDPORTEN-...>` byttes ut med verdiene til TestKlienten. 
+   * Variabler som starter på `<IDPORTEN-...>` byttes ut med verdiene til _**TestKlienten**_ (se lenke i ingress). 
    * Variabler som starter på `<BACKEND...>` byttes ut avhengig av hvilke apper du kjører. 
    * Variabler som starter på `<din-...>` byttes ut med verdier til de kjørende poddene du har i miljø. \
      (Det finnes ingen testklient for TokenX)
    </details>
    <br>
-1. Rename alle forekomster av `/oidc/callback` til `/oauth2/callback`. Det er kun denne pathen som er registrert.
+1. Rename alle forekomster av `/oidc/callback` til `/oauth2/callback` i hele koden. Det er kun denne pathen som er registrert.
 1. Endre `services.oidc-auth-proxy.ports` i `startup-utils/docker-compose.yml` til: 
    ```
      - "3000:8101"
@@ -219,6 +219,7 @@ Følgende fremgangsmåte vil ikke fungere for Chrome, så bruk Firefox:
    secure = false;
    sameSite = 'none';
    ```
+   (Dette ligger inni !https if'en)
    NB: Dette fungerer ikke i `Chrome`. Bruk `Firefox` isteden. 
 1. Kjør opp med docker-compose: 
    ```

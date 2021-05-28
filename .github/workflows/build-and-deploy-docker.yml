@@ -45,7 +45,7 @@ jobs:
 
       - name: Sette Docker variabler
         run: |
-          echo "TAG=${MAJOR_VERSSION}.$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "TAG=${MAJOR_VERSION}.$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Bygg & last opp Docker image
         if: github.ref == 'refs/heads/master'

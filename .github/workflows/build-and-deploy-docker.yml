@@ -46,9 +46,11 @@ jobs:
       - name: Sette Docker variabler
         run: |
           echo "TAG=${MAJOR_VERSION}.$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "RC_TAG=${MAJOR_VERSION}.$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)-RC" >> $GITHUB_ENV
 
-      - name: Bygg & last opp Docker image
-        if: github.ref == 'refs/heads/master'
+
+      - name: Bygg & last opp Docker image (Release)
+        if: github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, 'ci skip')
         run: |
           docker build --pull --tag ${BASE_IMAGE}:${TAG} --tag ${BASE_IMAGE}:latest .
           echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
@@ -58,6 +60,6 @@ jobs:
       - name: Bygg & last opp Docker image (Release Candidate)
         if: github.ref != 'refs/heads/master'
         run: |
-          docker build --pull --tag ${BASE_IMAGE}:${TAG}-RC
+          docker build --pull --tag ${BASE_IMAGE}:${RC_TAG}
           echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
-          docker push ${BASE_IMAGE}:${TAG}
+          docker push ${BASE_IMAGE}:${RC_TAG}

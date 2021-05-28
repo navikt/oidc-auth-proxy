@@ -10,10 +10,12 @@ on:
       - 'test/**'
     branches:
       - master
+  workflow_dispatch:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   BASE_IMAGE: ghcr.io/${{ github.repository }}
+  MAJOR_VERSION: "1"
 
 jobs:
   docker:
@@ -43,11 +45,19 @@ jobs:
 
       - name: Sette Docker variabler
         run: |
-          echo "TAG=$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "TAG=${MAJOR_VERSSION}.$(date "+%Y.%m.%d")-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Bygg & last opp Docker image
+        if: github.ref == 'refs/heads/master'
         run: |
           docker build --pull --tag ${BASE_IMAGE}:${TAG} --tag ${BASE_IMAGE}:latest .
           echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
           docker push ${BASE_IMAGE}:${TAG}
           docker push ${BASE_IMAGE}:latest
+
+      - name: Bygg & last opp Docker image (Release Candidate)
+        if: github.ref != 'refs/heads/master'
+        run: |
+          docker build --pull --tag ${BASE_IMAGE}:${TAG}-RC
+          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${BASE_IMAGE}:${TAG}

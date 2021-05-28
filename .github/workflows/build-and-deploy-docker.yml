@@ -60,6 +60,6 @@ jobs:
       - name: Bygg & last opp Docker image (Release Candidate)
         if: github.ref != 'refs/heads/master'
         run: |
-          docker build --pull --tag ${BASE_IMAGE}:${RC_TAG}
+          docker build --pull --tag ${BASE_IMAGE}:${RC_TAG} .
           echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
           docker push ${BASE_IMAGE}:${RC_TAG}

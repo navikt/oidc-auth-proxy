@@ -101,14 +101,11 @@ const getProxyConfig = () => {
     return config;
 };
 
-const getAdditionalAuthorizationParameters = () => {
-    return configValueAsJson({name: 'ADDITIONAL_AUTHORIZATION_PARAMETERS', secret: false, required: false});
-};
-
 const clientId = configValue({ name: 'CLIENT_ID' });
 const jwks = getJwks({ name: 'JWK', required: true });
 const loginScopes = configValue({ name: 'LOGIN_SCOPES' });
 const discoveryUrl = configValue({ name: 'DISCOVERY_URL' });
+const additionalAuthorizationParameters = configValueAsJson({name: 'ADDITIONAL_AUTHORIZATION_PARAMETERS', secret: false, required: false});
 
 const onBehalfOfClientId = configValue({ name: 'ON_BEHALF_OF_CLIENT_ID', required: false }) || clientId;
 const onBehalfOfJwks = getJwks({ name: 'ON_BEHALF_OF_JWK', required: false}) || jwks;
@@ -118,7 +115,7 @@ const onBehalfOfGrantType = configValue({ name: 'ON_BEHALF_OF_GRANT_TYPE', requi
 const oidcAuthProxyBaseUrl = configValue({ name: 'OIDC_AUTH_PROXY_BASE_URL' });
 const applicationBaseUrl = configValue({ name: 'APPLICATION_BASE_URL' });
 const allowProxyToSelfSignedCertificates = configValue({ name: 'ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES', required: false }) === 'false'
-const callbackPath = '/oidc/callback';
+const callbackPath = configValue({ name: 'CALLBACK_PATH', required: false}) || '/oidc/callback';
 const callbackUrl = `${oidcAuthProxyBaseUrl}${callbackPath}`;
 const sessionIdCookieName = configValue({ name: 'SESSION_ID_COOKIE_NAME' });
 const sessionIdCookieSignSecret = configValue({ name: 'SESSION_ID_COOKIE_SIGN_SECRET', secret: true });
@@ -173,6 +170,7 @@ module.exports = {
     jwks,
     loginScopes,
     discoveryUrl,
+    additionalAuthorizationParameters,
     onBehalfOfClientId,
     onBehalfOfJwks,
     onBehalfOfDiscoveryUrl,
@@ -183,7 +181,6 @@ module.exports = {
     sessionIdCookieProperties: getSessionIdCookieProperties(),
     sessionIdCookieName,
     proxyConfig: getProxyConfig(),
-    additionalAuthorizationParameters: getAdditionalAuthorizationParameters(),
     callbackPath,
     callbackUrl,
     allowProxyToSelfSignedCertificates,

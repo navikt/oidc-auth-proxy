@@ -1,7 +1,7 @@
 import { Selector, ClientFunction } from 'testcafe';
 
-const loginUrl = 'http://localhost:8101/login';
-const loginSuccessUrl = 'http://localhost:8101/api/azure-mock/audience-check';
+const loginUrl = 'http://localhost:3000/login';
+const loginSuccessUrl = 'http://localhost:3000/api/azure-mock/audience-check';
 const webSocketClientUrl = 'http://localhost:1337'
 const getCurrentUrl = ClientFunction(() => window.location.href);
 const expectedAudienceAzureMock = Selector('#audience').withText('azure-mock');

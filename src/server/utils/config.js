@@ -63,15 +63,16 @@ const configValueAsJson = ({ name, secret = false, required = true }) => {
     }
 };
 
-const getJwks = () => {
-    const jwk = configValueAsJson({ name: 'JWK', secret: true, required: true });
+const getJwks = ({name, required}) => {
+    const jwk = configValueAsJson({ name, secret: true, required });
+    if (!jwk) { return null; }
     if (!jwk.kid) {
-        logger.error(`Config: 'JWK' mangler 'kid' claim.`);
+        logger.error(`Config: ${name} mangler 'kid' claim.`);
         process.exit(1);
     }
     // UnhandledPromiseRejectionWarning: JWKInvalid: `x5c` member at index 0 is not a valid base64-encoded DER PKIX certificate
     delete jwk.x5c;
-    return {
+    return { 
         keys: [jwk],
     };
 };
@@ -105,8 +106,15 @@ const getAdditionalAuthorizationParameters = () => {
 };
 
 const clientId = configValue({ name: 'CLIENT_ID' });
+const jwks = getJwks({ name: 'JWK', required: true });
 const loginScopes = configValue({ name: 'LOGIN_SCOPES' });
 const discoveryUrl = configValue({ name: 'DISCOVERY_URL' });
+
+const onBehalfOfClientId = configValue({ name: 'ON_BEHALF_OF_CLIENT_ID', required: false }) || clientId;
+const onBehalfOfJwks = getJwks({ name: 'ON_BEHALF_OF_JWK', required: false}) || jwks;
+const onBehalfOfDiscoveryUrl = configValue({ name: 'ON_BEHALF_OF_DISCOVERY_URL', required: false }) || discoveryUrl;
+const onBehalfOfGrantType = configValue({ name: 'ON_BEHALF_OF_GRANT_TYPE', required: false }) || 'urn:ietf:params:oauth:grant-type:jwt-bearer';
+
 const oidcAuthProxyBaseUrl = configValue({ name: 'OIDC_AUTH_PROXY_BASE_URL' });
 const applicationBaseUrl = configValue({ name: 'APPLICATION_BASE_URL' });
 const allowProxyToSelfSignedCertificates = configValue({ name: 'ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES', required: false }) === 'false'
@@ -162,14 +170,18 @@ const getCorsExposedHeaders = () => {
 
 module.exports = {
     clientId,
+    jwks,
     loginScopes,
     discoveryUrl,
+    onBehalfOfClientId,
+    onBehalfOfJwks,
+    onBehalfOfDiscoveryUrl,
+    onBehalfOfGrantType,
     oidcAuthProxyBaseUrl,
     applicationBaseUrl,
     sessionIdCookieSecrets,
     sessionIdCookieProperties: getSessionIdCookieProperties(),
     sessionIdCookieName,
-    jwks: getJwks(),
     proxyConfig: getProxyConfig(),
     additionalAuthorizationParameters: getAdditionalAuthorizationParameters(),
     callbackPath,

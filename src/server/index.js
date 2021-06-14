@@ -15,7 +15,7 @@ import { loginRoutes } from './routes/login';
 import { logoutRoutes } from './routes/logout';
 import { meRoutes } from './routes/me';
 
-export default (authClient) => {
+export default ({loginClient, onBehalfOfClient}) => {
     const server = express();
     const sessionStore = getSessionStore(session);
 
@@ -56,18 +56,18 @@ export default (authClient) => {
 
     server.use(sessionParser);
 
-    const webSocketProxy = new WebSocketProxy(authClient);
+    const webSocketProxy = new WebSocketProxy(onBehalfOfClient);
 
     config.proxyConfig.apis.forEach((api) => {
-        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, authClient)));
+        server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, onBehalfOfClient)));
         const webSocket = webSocketProxy.leggTil({api});
         if (webSocket) {
             server.use(webSocket.path, webSocket.middleware);
         }
     });
 
-    callbackRoutes(server, authClient);
-    loginRoutes(server, authClient);
+    callbackRoutes(server, loginClient);
+    loginRoutes(server, loginClient);
     logoutRoutes(server);
     meRoutes(server);
     k8sRoutes(server);

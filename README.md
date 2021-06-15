@@ -115,6 +115,27 @@ Om de ikke settes defaulter det til verdiene uten `ON_BEHALF_OF_`-prefix.
 
 `ON_BEHALF_OF_GRANT_TYPE`  er default `urn:ietf:params:oauth:grant-type:jwt-bearer`
 
+## Nais & secrets
+
+https://doc.nais.io/security/secrets/kubernetes-secrets/
+
+Eksempelvis, om man lager èn secret `oidc-auth-proxy-secrets` med tre verdier, `SESSION_ID_COOKIE_SIGN_SECRET`, `SESSION_ID_COOKIE_VERIFY_SECRET` & `REDIS_PASWORD`.
+
+
+```
+  filesFrom:
+    - secret: oidc-auth-proxy-secrets
+      mountPath: /var/run/secrets/oidc-auth-proxy
+  .....
+   env:
+    - name: REDIS_PASSWORD
+      value: path:/var/run/secrets/oidc-auth-proxy/REDIS_PASSWORD
+    - name: SESSION_ID_COOKIE_SIGN_SECRET
+      value: path:/var/run/secrets/oidc-auth-proxy/SESSION_ID_COOKIE_SIGN_SECRET
+    - name: SESSION_ID_COOKIE_VERIFY_SECRET
+      value: path:/var/run/secrets/oidc-auth-proxy/SESSION_ID_COOKIE_VERIFY_SECRET
+```
+
 ## Nais & Idporten & TokenX
 
 https://doc.nais.io/security/auth/tokenx/
@@ -126,12 +147,12 @@ https://doc.nais.io/security/auth/idporten/
   "CLIENT_ID": "env:IDPORTEN_CLIENT_ID",
   "JWK": "env:IDPORTEN_CLIENT_JWK",
   "DISCOVERY_URL": "env:IDPORTEN_WELL_KNOWN_URL",
-  "LOGIN_SCOPES": "openid profile",
+  "LOGIN_SCOPES": "value:openid profile",
   "ON_BEHALF_OF_CLIENT_ID": "env:TOKEN_X_CLIENT_ID",
   "ON_BEHALF_DISCOVERY_URL": "env:TOKEN_X_WELL_KNOWN_URL",
   "ON_BEHALF_OF_JWK": "env:TOKEN_X_PRIVATE_JWK",
   "ON_BEHALF_OF_GRANT_TYPE": "value:urn:ietf:params:oauth:grant-type:token-exchange",
-  "ADDITIONAL_AUTHORIZATION_PARAMETERS": '{"resource": "https://nav.no"}'
+  "ADDITIONAL_AUTHORIZATION_PARAMETERS": 'value:{"resource": "https://nav.no"}'
 }
 ```
 

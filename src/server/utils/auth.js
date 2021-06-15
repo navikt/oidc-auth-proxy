@@ -36,12 +36,18 @@ export async function getTokenOnBehalfOf({ authClient, api, request }) {
     const tokenSets = getTokenSetsFromSession({ request });
     if (!isAuthenticated({ tokenSets, id: api.id })) {
         const onBehalfTokenSet = await authClient.grant({
-            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            grant_type: config.onBehalfOfGrantType,
             client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
             requested_token_use: 'on_behalf_of',
             scope: api.scopes,
             assertion: tokenSets[self].access_token,
-        }, {clientAssertionPayload: {aud: authClient.issuer.metadata['token_endpoint']}});
+            subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+            subject_token: tokenSets[self].access_token,
+            audience: api.scopes,
+        }, {clientAssertionPayload: {
+            aud: authClient.issuer.metadata['token_endpoint'],
+            nbf: Math.floor(Date.now() / 1000),
+        }});
         request.session.tokenSets[api.id] = onBehalfTokenSet;
         return onBehalfTokenSet;
     } else {

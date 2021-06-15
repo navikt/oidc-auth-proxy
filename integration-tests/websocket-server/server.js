@@ -4,7 +4,7 @@ const WebSocket = require('ws');
 
 const clientPort = 1337;
 const serverPort = 1338;
-const proxyPort = 8101;
+const proxyPort = 3000;
 const serverPath = '/ws';
 
 const wss = new WebSocket.Server({

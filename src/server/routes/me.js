@@ -2,6 +2,8 @@ import { isAuthenticated, getTokenSetsFromSession } from '../utils/auth';
 import jwt_decode from 'jwt-decode';
 import { getRedirectUriFromHeader } from '../utils/redirectUri';
 import config from '../utils/config';
+import { logger } from '../utils//log';
+
 
 export const meRoutes = (app) => {
     app.get('/me', function (request, response) {
@@ -17,7 +19,7 @@ export const meRoutes = (app) => {
                 response.json({});
             }
         } else {
-            logger.info("Ikke logget inn. Sender til innlogging.")
+            logger.info("Ikke logget inn. Sender til innlogging. (/me path)");
             const redirectUri = getRedirectUriFromHeader({ request });
             response.header('Location', `${config.oidcAuthProxyBaseUrl}/login?redirect_uri=${redirectUri}`);
             response.sendStatus(401);

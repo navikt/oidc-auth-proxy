@@ -15,7 +15,7 @@ export const getProxyOptions = (api, authClient) => ({
         const authenticated = isAuthenticated({ request });
         logger.debug(`Authenticated = ${authenticated}`);
         if (!authenticated) {
-            logger.info("Ikke logget inn. Sender til innlogging.")
+            logger.info("Ikke logget inn. Sender til innlogging. (proxy path)");
             const redirectUri = getRedirectUriFromHeader({ request });
             response.header('Location', `${config.oidcAuthProxyBaseUrl}/login?redirect_uri=${redirectUri}`);
             response.sendStatus(401);

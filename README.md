@@ -76,12 +76,6 @@ Secret session id cookie verifisres mot om den ikke var signert med `SESSION_ID_
 
 Proxy som benyttes mot oidc provider
 
-### ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES (optional)
-
-Default `false`. Støtte for å sette true  vil fjernes ved neste major oppdaterting.
-
-Om settes til `true` vil det tillates at proxyen fungerer som proxy mot tjenester med selvsignerte TLS sertifikater.
-Alle andre verdier vil føre til feil ved proxy request til tjenester med selvsignerte TLS sertifikater
 
 ### REDIS_HOST, REDIS_PORT & REDIS_PASSWORD (required)
 

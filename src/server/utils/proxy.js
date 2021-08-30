@@ -34,9 +34,6 @@ export const getProxyOptions = (api, authClient) => ({
                 ({ token_type, access_token }) => {
                     logger.debug('Legger på Authorization header.');
                     requestOptions.headers['Authorization'] = `${token_type} ${access_token}`;
-                    if (config.allowProxyToSelfSignedCertificates) {
-                        requestOptions.rejectUnauthorized = false;
-                    }
                     resolve(requestOptions);
                 },
                 (error) => reject(error)

@@ -23,6 +23,7 @@ wss.on('connection', function connection(ws, req) {
         audience = decodedJwt.aud;
     }
     ws.on('message', function incoming(data) {
+        console.log("Sender audience=" + audience + " over WebSocket.");
         ws.send(audience);
     });
 });
@@ -50,7 +51,7 @@ http.createServer(function (req, res) {
         };
 
         socket.onerror = function (error) {
-            console.log('WebSocket error: ' + error);
+            console.log('WebSocket error: ' + JSON.stringify(error));
         };
     </script>`
     );

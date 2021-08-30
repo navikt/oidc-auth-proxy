@@ -15,6 +15,6 @@ test('Logger inn og requester tjeneste bak proxy med riktig audience', async tc 
     const currentUrl = await getCurrentUrl();
     await tc.expect(currentUrl).eql(loginSuccessUrl);
     await tc.expect(expectedAudienceAzureMock().exists).ok();
-    //await tc.navigateTo(webSocketClientUrl);
-    //await tc.expect(expectedAudienceWebSocketServer().exists).ok();
+    await tc.navigateTo(webSocketClientUrl);
+    await tc.expect(expectedAudienceWebSocketServer().exists).ok();
 });

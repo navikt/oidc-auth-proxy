@@ -26,3 +26,11 @@ services:
       - azure-mock
       - redis
     mem_limit: 64m
+  websocket-server:
+    build: ../integration-tests/websocket-server
+    container_name: websocket-server
+    restart: on-failure
+    mem_limit: 64m
+    ports:
+      - "1337:1337"
+      - "1338:1338"

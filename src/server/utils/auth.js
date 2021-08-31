@@ -56,38 +56,41 @@ export async function getTokenOnBehalfOf({ authClient, api, request }) {
 }
 
 export function prepareAndGetAuthorizationUrl({ request, authClient, redirectUri }) {
-    handleNonceAndStateOnSession({ request });
+    handleLoginVariablesOnSession({ request });
     setRedirectUriOnSession({ request, redirectUri });
     const authorizationParameters = getAuthorizationParameters(
         config.additionalAuthorizationParameters,
         config.loginScopes,
         config.callbackUrl,
-        request.session.nonce,
-        request.session.state,
+        request.session.login_variables.nonce,
+        request.session.login_variables.state,
+        request.session.login_variables.code_verifier
     );
     return authClient.authorizationUrl(authorizationParameters);
 }
 
-function handleNonceAndStateOnSession({ request }) {
-    const currentNonce = request.session.nonce;
-    const currentState = request.session.state;
-    const nonceAndStateSetAt = request.session.nonceAndStateSetAt;
+function handleLoginVariablesOnSession({ request }) {
+    const currentLoginVariables = request.session.login_variables;
 
-    if (!currentNonce || !currentState || !nonceAndStateSetAt) {
-        setNonceAndStateOnSession({ request });
+    if (!currentLoginVariables) {
+        setLoginVariablesOnSession({ request });
     }
 
     const currentTimestamp = Date.now();
+    const loginVariablesSetAt = request.session.login_variables.set_at;
 
-    if ((currentTimestamp - nonceAndStateSetAt) < tenSecondsInMilliseconds) {
-        logger.info(`nonce & state satt for ${currentTimestamp - nonceAndStateSetAt}ms siden. Setter ikke nye.`);
+    if ((currentTimestamp - loginVariablesSetAt) < tenSecondsInMilliseconds) {
+        logger.info(`Login variables satt for ${currentTimestamp - loginVariablesSetAt}ms siden. Setter ikke nye.`);
     } else {
-        setNonceAndStateOnSession({ request });
+        setLoginVariablesOnSession({ request });
     }
 }
 
-function setNonceAndStateOnSession({ request }) {
-    request.session.nonce = generators.nonce();
-    request.session.state = generators.state();
-    request.session.nonceAndStateSetAt = Date.now();
+function setLoginVariablesOnSession({ request }) {
+    request.session.login_variables = {
+        set_at: Date.now(),
+        nonce: generators.nonce(),
+        state: generators.state(),
+        code_verifier: generators.codeVerifier()
+    };
 }

@@ -6,13 +6,12 @@ const self = 'self';
 
 const callbackRoutes = (app, authClient) => {
     app.post(config.callbackPath, (req, res) => {
-        const authorizationCode = req.query.code;
         const params = authClient.callbackParams(req);
         authClient
             .callback(config.callbackUrl, params, {
-                code_verifier: authorizationCode,
-                nonce: req.session.nonce,
-                state: req.session.state,
+                code_verifier: req.session.login_variables.code_verifier,
+                nonce: req.session.login_variables.nonce,
+                state: req.session.login_variables.state,
             }, {clientAssertionPayload: {aud: authClient.issuer.metadata['token_endpoint']}})
             .then(
                 (tokenSet) => {

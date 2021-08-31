@@ -5,6 +5,8 @@ describe("getAuthorizationParameters", () => {
     const originalRedirectUri = "redirectUri"
     const originalNonce = "nonce123"
     const originalState = "state1234"
+    const originalCodeVerifier = "code_verifier1234"
+    const expectedCodeChallenge = "d3ASUSHZQmdP2STZcHvv8sU3aoHrkH6fql-VXiSxDww"
 
     it("should append new parameters", () => {
         const additionalParameters = JSON.parse(`{
@@ -12,7 +14,7 @@ describe("getAuthorizationParameters", () => {
             "additionalPropertyThatDontExist": "tull001"
         }`)
 
-        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
+        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState, originalCodeVerifier);
 
         expect(allParameters.resource).toBe("nav.no");
         expect(allParameters.additionalPropertyThatDontExist).toBe("tull001"); // Possible since AuthorizationParameters accepts other properties: [key: string]: unknown;
@@ -21,7 +23,7 @@ describe("getAuthorizationParameters", () => {
     it("should contain original parameters when additionalParameters is undefined", () => {
         const additionalParameters = undefined
 
-        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
+        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState, originalCodeVerifier);
 
         expect(allParameters.response_mode).toBe("form_post");
         expect(allParameters.response_type).toBe("code");
@@ -29,12 +31,13 @@ describe("getAuthorizationParameters", () => {
         expect(allParameters.redirect_uri).toBe(originalRedirectUri);
         expect(allParameters.state).toBe(originalState);
         expect(allParameters.nonce).toBe(originalNonce);
+        expect(allParameters.code_challenge).toBe(expectedCodeChallenge);
     });
 
     it("should contain original parameters when additionalParameters is empty", () => {
         const additionalParameters = JSON.parse(`{}`)
 
-        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
+        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState, originalCodeVerifier);
 
         expect(allParameters.response_mode).toBe("form_post");
         expect(allParameters.response_type).toBe("code");
@@ -42,6 +45,7 @@ describe("getAuthorizationParameters", () => {
         expect(allParameters.redirect_uri).toBe(originalRedirectUri);
         expect(allParameters.state).toBe(originalState);
         expect(allParameters.nonce).toBe(originalNonce);
+        expect(allParameters.code_challenge).toBe(expectedCodeChallenge);
     });
 
     it("should not override existing properties", () => {
@@ -54,7 +58,7 @@ describe("getAuthorizationParameters", () => {
             "state": "new state"
         }`)
 
-        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState);
+        const allParameters = getAuthorizationParameters(additionalParameters, originalScope, originalRedirectUri, originalNonce, originalState, originalCodeVerifier);
 
         expect(allParameters.response_mode).toBe("form_post");
         expect(allParameters.response_type).toBe("code");
@@ -62,5 +66,6 @@ describe("getAuthorizationParameters", () => {
         expect(allParameters.redirect_uri).toBe(originalRedirectUri);
         expect(allParameters.state).toBe(originalState);
         expect(allParameters.nonce).toBe(originalNonce);
+        expect(allParameters.code_challenge).toBe(expectedCodeChallenge);
     });
 });

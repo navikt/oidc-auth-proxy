@@ -114,7 +114,6 @@ const onBehalfOfGrantType = configValue({ name: 'ON_BEHALF_OF_GRANT_TYPE', requi
 
 const oidcAuthProxyBaseUrl = configValue({ name: 'OIDC_AUTH_PROXY_BASE_URL' });
 const applicationBaseUrl = configValue({ name: 'APPLICATION_BASE_URL' });
-const allowProxyToSelfSignedCertificates = configValue({ name: 'ALLOW_PROXY_TO_SELF_SIGNED_CERTIFICATES', required: false }) === 'false'
 const callbackPath = configValue({ name: 'CALLBACK_PATH', required: false}) || '/oidc/callback';
 const callbackUrl = `${oidcAuthProxyBaseUrl}${callbackPath}`;
 const sessionIdCookieName = configValue({ name: 'SESSION_ID_COOKIE_NAME' });
@@ -183,7 +182,6 @@ module.exports = {
     proxyConfig: getProxyConfig(),
     callbackPath,
     callbackUrl,
-    allowProxyToSelfSignedCertificates,
     getRedisHost,
     getRedisPort,
     getRedisPassword,

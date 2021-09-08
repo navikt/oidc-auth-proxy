@@ -20,13 +20,12 @@ const configValue = ({name, secret = false, required = true}) => {
     let value = null;
     if (pointer.startsWith(ENV_PREFIX)) {
         value = process.env[pointer.slice(ENV_PREFIX.length)];
-    } else if (pointer.startsWith(PATH_PREFIX)) {   
+    } else if (pointer.startsWith(PATH_PREFIX)) {
         value = fs.readFileSync(pointer.slice(PATH_PREFIX.length), 'utf-8');
     } else if (pointer.startsWith(VALUE_PREFIX)) {
         value = pointer.slice(VALUE_PREFIX.length);
     } else {
-        logger.error(`Config: Environment variable ${name} må peke på en verdi som starter med ${ENV_PREFIX}, ${PATH_PREFIX}, ${VALUE_PREFIX}`);
-        process.exit(1);    
+        value = pointer;
     }
 
     // Validerer
@@ -72,7 +71,7 @@ const getJwks = ({name, required}) => {
     }
     // UnhandledPromiseRejectionWarning: JWKInvalid: `x5c` member at index 0 is not a valid base64-encoded DER PKIX certificate
     delete jwk.x5c;
-    return { 
+    return {
         keys: [jwk],
     };
 };
@@ -125,11 +124,11 @@ const getSessionIdCookieProperties = () => {
     const https =
         applicationBaseUrl.toLocaleLowerCase().startsWith('https') &&
         oidcAuthProxyBaseUrl.toLocaleLowerCase().startsWith('https');
-    
+
     // Defualtverdier. Ved bruk av Strict/Lax mister vi cookie ved innloggingsflyt mot Azure.
     // sameSite=true fungerer kun om secure=true. Derfor bruker vi ved kjøring lokalt
     // secure=false & sameSite=strict
-    
+
     var secure = true;
     var sameSite = 'none';
 

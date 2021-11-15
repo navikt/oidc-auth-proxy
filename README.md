@@ -1,5 +1,11 @@
 # OIDC-auth-proxy
 
+## :bangbang: Før den tas i bruk :bangbang:
+Dette ble laget før nais lagde `Wonderwall`. Se om du heler kan ta i bruk den ved integrasjon for Azure AD/ Idporten før du tar i bruk dette docker-imaget.
+
+- https://doc.nais.io/security/auth/azure-ad/sidecar/
+- https://doc.nais.io/security/auth/idporten/sidecar/
+
 Proxy som deployes som en egen instans ved siden av applikasjonen som skal bruke den.
 Håndterer OIDC-innlogging, samt veksling til korrekt `on_behalf_of`- access token som trengs for å kalle de forskjellige tjenestene.
 

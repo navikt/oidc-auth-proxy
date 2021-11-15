@@ -33,7 +33,7 @@ Returnerer 401 om brukeren ikke er logget inn.
 Config plukkes opp fra environment variabler som i sin tur peker på hvor selve verdien er lagret.
 Detter er en breaking change fra Major versjon 1 til versjon 2!!
 
-Om verdien av environment variabelen starter med `value:` hentes verdien rått etter nevnte prefix.
+Om verdien av environment variabelen starter med `value:` hentes verdien rått etter nevnte prefix (fungerer også uten noen av de andre prefixene. så `value:FOO` == `FOO`)
 
 Om verdien av environment variabelen starter med `env:` hentes verdien fra environment variable uten nevnte prefix.
 

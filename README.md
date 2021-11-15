@@ -6,6 +6,7 @@ Dette ble laget før nais lagde `Wonderwall`. Se om du heler kan ta i bruk den v
 - https://doc.nais.io/security/auth/azure-ad/sidecar/
 - https://doc.nais.io/security/auth/idporten/sidecar/
 
+## :information_source:	TLDR :information_source:	
 Proxy som deployes som en egen instans ved siden av applikasjonen som skal bruke den.
 Håndterer OIDC-innlogging, samt veksling til korrekt `on_behalf_of`- access token som trengs for å kalle de forskjellige tjenestene.
 

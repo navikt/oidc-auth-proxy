@@ -18,7 +18,7 @@
         "express": "4.17.1",
         "express-http-proxy": "1.6.3",
         "express-session": "1.17.2",
-        "helmet": "4.6.0",
+        "helmet": "6.0.1",
         "http-proxy-middleware": "2.0.1",
         "jose": "4.3.7",
         "jwt-decode": "3.1.2",

@@ -13,7 +13,7 @@
     "dependencies": {
         "body-parser": "1.19.0",
         "connect-redis": "6.0.0",
-        "core-js": "3.19.1",
+        "core-js": "3.27.1",
         "cors": "2.8.5",
         "express": "4.17.1",
         "express-http-proxy": "1.6.3",

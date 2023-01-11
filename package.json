@@ -27,7 +27,7 @@
         "regenerator-runtime": "0.13.9",
         "tunnel": "0.0.6",
         "ulid": "2.3.0",
-        "winston": "3.3.3"
+        "winston": "3.8.2"
     },
     "devDependencies": {
         "@babel/cli": "7.16.0",

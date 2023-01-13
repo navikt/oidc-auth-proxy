@@ -21,14 +21,12 @@ const getHttpProxy = () => {
             };
         } else if (proxyUrl.protocol === 'http:') {
             logger.info(`Bruker HTTP Proxy ${proxy} (httpsOverHttp)`);
-            const proxyTest = tunnel.httpsOverHttp({
+            return tunnel.httpsOverHttp({
                 proxy: {
                     host: proxyUrl.hostname,
                     port: proxyUrl.port,
                 },
             });
-            logger.info(proxyTest)
-            return proxyTest
         } else {
             logger.warning(`HTTP Proxy med ${proxy} har ikke støttet protokoll ${proxyUrl.protocol}. Ingen proxy registrert.`);
             return null;

@@ -21,14 +21,12 @@ const getHttpProxy = () => {
             };
         } else if (proxyUrl.protocol === 'http:') {
             logger.info(`Bruker HTTP Proxy ${proxy} (httpsOverHttp)`);
-            const proxyTest = {
-                https: tunnel.httpsOverHttp({
-                    proxy: {
-                        host: proxyUrl.hostname,
-                        port: proxyUrl.port,
-                    },
-                })
-            };
+            const proxyTest = tunnel.httpsOverHttp({
+                proxy: {
+                    host: proxyUrl.hostname,
+                    port: proxyUrl.port,
+                },
+            });
             logger.info(proxyTest)
             return proxyTest
         } else {

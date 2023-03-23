@@ -19,7 +19,7 @@
         "express-http-proxy": "1.6.3",
         "express-session": "1.17.2",
         "helmet": "4.6.0",
-        "http-proxy-middleware": "2.0.1",
+        "http-proxy-middleware": "2.0.6",
         "jose": "4.3.7",
         "jwt-decode": "3.1.2",
         "openid-client": "5.3.1",

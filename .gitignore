@@ -1,6 +1,5 @@
 .idea
 node_modules
-package-lock.json
 .env
 local_env
 dist/

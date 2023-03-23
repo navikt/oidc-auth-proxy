@@ -1,21 +1,23 @@
 import config from './config';
 import logger from './log';
-import redis from 'redis';
+import { createClient } from 'redis';
+import RedisStore from 'connect-redis';
 import { MemoryStore } from 'express-session';
 
-export const getSessionStore = (session) => {
+export const getSessionStore = async () => {
     if (config.useInMemorySessionStore()) {
         logger.warning('Kjører applikasjonen med Session Store In Memory.');
         return new MemoryStore();
     } else {
         logger.info('Initialiserer Redis Session Store.');
-        const RedisStore = require('connect-redis')(session);
-        const redisClient = redis.createClient({
-            host: config.getRedisHost(),
+        const redisClient = createClient({
+            url: 'redis://localhost:6379',
             password: config.getRedisPassword(),
             port: config.getRedisPort(),
         });
-        redisClient.on('connect', () => {
+        await redisClient.connect();
+        redisClient.on('connect', async () => {
+            await redisClient.ping();
             logger.info('Redis client connected');
         });
         redisClient.on('error', (err) => {

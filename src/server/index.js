@@ -15,9 +15,9 @@ import { loginRoutes } from './routes/login';
 import { logoutRoutes } from './routes/logout';
 import { meRoutes } from './routes/me';
 
-export default ({loginClient, onBehalfOfClient}) => {
+export default async ({ loginClient, onBehalfOfClient }) => {
     const server = express();
-    const sessionStore = getSessionStore(session);
+    const sessionStore = await getSessionStore();
 
     server.use(
         helmet({
@@ -60,7 +60,7 @@ export default ({loginClient, onBehalfOfClient}) => {
 
     config.proxyConfig.apis.forEach((api) => {
         server.use(`/api/${api.path}*`, proxy(api.url, getProxyOptions(api, onBehalfOfClient)));
-        const webSocket = webSocketProxy.leggTil({api});
+        const webSocket = webSocketProxy.leggTil({ api });
         if (webSocket) {
             server.use(webSocket.path, webSocket.middleware);
         }
@@ -74,11 +74,13 @@ export default ({loginClient, onBehalfOfClient}) => {
 
     const port = process.env.PORT || 8080;
 
-    server.listen(port, () => {
-        logger.info(`Lytter på port ${port}`);
-    }).on('upgrade', async function (request, socket, head) {
-        sessionParser(request, {}, async() => {
-            webSocketProxy.handleUpgrade({request, socket, head});
+    server
+        .listen(port, () => {
+            logger.info(`Lytter på port ${port}`);
+        })
+        .on('upgrade', async function (request, socket, head) {
+            sessionParser(request, {}, async () => {
+                webSocketProxy.handleUpgrade({ request, socket, head });
+            });
         });
-    });   
 };

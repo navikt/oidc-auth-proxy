@@ -15,9 +15,9 @@ import { loginRoutes } from './routes/login';
 import { logoutRoutes } from './routes/logout';
 import { meRoutes } from './routes/me';
 
-export default ({ loginClient, onBehalfOfClient }) => {
+export default async ({ loginClient, onBehalfOfClient }) => {
     const server = express();
-    const sessionStore = getSessionStore();
+    const sessionStore = await getSessionStore();
 
     server.use(
         helmet({

@@ -1,6 +1,6 @@
 import config from './config';
 import logger from './log';
-import redis from 'redis';
+import { createClient } from 'redis';
 import RedisStore from 'connect-redis';
 import { MemoryStore } from 'express-session';
 
@@ -10,8 +10,8 @@ export const getSessionStore = async () => {
         return new MemoryStore();
     } else {
         logger.info('Initialiserer Redis Session Store.');
-        const redisClient = redis.createClient({
-            host: config.getRedisHost(),
+        const redisClient = createClient({
+            url: 'redis://localhost:6379',
             password: config.getRedisPassword(),
             port: config.getRedisPort(),
         });

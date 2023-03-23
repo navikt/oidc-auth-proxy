@@ -1,4 +1,4 @@
-FROM navikt/common:0.1 AS navikt-common
+FROM navikt/common:0.3 AS navikt-common
 FROM node:16-alpine
 LABEL org.opencontainers.image.source=https://github.com/navikt/oidc-auth-proxy
 

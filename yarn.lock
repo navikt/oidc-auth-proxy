@@ -2544,10 +2544,10 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-helmet@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-4.6.0.tgz#579971196ba93c5978eb019e4e8ec0e50076b4df"
-  integrity sha512-HVqALKZlR95ROkrnesdhbbZJFi/rIVSoNq6f3jA/9u6MIbTsPh3xZwihjeI5+DO/2sOV6HMHooXcEOuwskHpTg==
+helmet@6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-6.1.2.tgz#063af3d2c7fa25c09f377aaede7b8a9dffbbe761"
+  integrity sha512-n39kcD7ntw83PMeqqjSOPrY/VpIH+XniLoxFXLfK6UCgTTN9XkOGp2YWKB/zfgZS+zRQdiHo3fgNmy0l5xoFPg==
 
 homedir-polyfill@^1.0.1:
   version "1.0.3"

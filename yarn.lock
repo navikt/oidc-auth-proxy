@@ -1839,10 +1839,10 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-connect-redis@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-6.0.0.tgz#7e443fc7028eca43302bee59f51a315f65cd56b5"
-  integrity sha512-6eGEAAPHYvcfbRNCMmPzBIjrqRWLw7at9lCUH4G6NQ8gwWDJelaUmFNOqPIhehbw941euVmIuqWsaWiKXfb+5g==
+connect-redis@7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-7.1.0.tgz#6618334697f2ed91536848cdc03734def2138acf"
+  integrity sha512-UaqO1EirWjON2ENsyau7N5lbkrdYBpS6mYlXSeff/OYXsd6EGZ+SXSmNPoljL2PSua8fgjAEaldSA73PMZQ9Eg==
 
 content-disposition@0.5.4:
   version "0.5.4"

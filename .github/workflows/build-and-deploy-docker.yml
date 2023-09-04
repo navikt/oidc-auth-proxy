@@ -15,12 +15,17 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   BASE_IMAGE: ghcr.io/${{ github.repository }}
-  MAJOR_VERSION: "2"
+  MAJOR_VERSION: "3"
 
 jobs:
   docker:
     name: Build and deploy Docker Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # trivy
+      packages: write
+      security-events: write #codeql
+      actions: read #codeql
     steps:
       - name: Hente kode
         uses: actions/checkout@v3
@@ -28,12 +33,17 @@ jobs:
       - name: Sette opp Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
+
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bygge app & kjøre integration tests
         shell: bash
         run: |
-          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
           cd startup-utils
           ./start-for-integration-tests.sh --detach
           cd ../integration-tests
@@ -52,9 +62,7 @@ jobs:
         if: github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, 'ci skip')
         run: |
           docker build --pull --tag ${BASE_IMAGE}:${TAG} --tag ${BASE_IMAGE}:latest .
-          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
-          docker push ${BASE_IMAGE}:${TAG}
-          docker push ${BASE_IMAGE}:latest
+          docker push ${BASE_IMAGE} --all-tags
           
       - name: Set image for trivy
         run: echo "IMAGE=${BASE_IMAGE}:${TAG}" >> $GITHUB_ENV
@@ -77,5 +85,4 @@ jobs:
         if: github.ref != 'refs/heads/master'
         run: |
           docker build --pull --tag ${BASE_IMAGE}:${RC_TAG} .
-          echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_REPOSITORY} --password-stdin
           docker push ${BASE_IMAGE}:${RC_TAG}

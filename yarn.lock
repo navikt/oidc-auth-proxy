@@ -3303,10 +3303,10 @@ jest@27.3.1:
     import-local "^3.0.2"
     jest-cli "^27.3.1"
 
-jose@4.13.1, jose@^4.10.0:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-4.13.1.tgz#449111bb5ab171db85c03f1bd2cb1647ca06db1c"
-  integrity sha512-MSJQC5vXco5Br38mzaQKiq9mwt7lwj2eXpgpRyQYNHYt2lq1PjkWa7DLXX0WVcQLE9HhMh3jPiufS7fhJf+CLQ==
+jose@4.14.5, jose@^4.10.0:
+  version "4.14.5"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.14.5.tgz#2de2f061b824d075cd5f27df0828fbc17b93e4da"
+  integrity sha512-56ns1XlSI8d5V0t7hilPu8dMbE4YIwrTJU6e7bV1Abyu6oel4tSc4YmD742MoWV3U+vn7O0WlKpinzu2DP0HWw==
 
 js-tokens@^4.0.0:
   version "4.0.0"

@@ -28,7 +28,7 @@ jobs:
       actions: read #codeql
     steps:
       - name: Hente kode
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Sette opp Node
         uses: actions/setup-node@v3

@@ -9,7 +9,7 @@ updates:
       patch:
         patterns:
           - "*"
-        updates-types:
+        update-types:
           - "patch"
 
   - package-ecosystem: github-actions

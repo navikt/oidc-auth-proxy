@@ -1,7 +1,7 @@
-# OIDC-auth-proxy
+# OIDC-auth-proxy (deprecated, bruk [wonderwall](https://github.com/nais/wonderwall))
 
 ## :bangbang: Før den tas i bruk :bangbang:
-Dette ble laget før nais lagde `Wonderwall`. Se om du heler kan ta i bruk den ved integrasjon for Azure AD/ Idporten før du tar i bruk dette docker-imaget.
+Dette ble laget før nais lagde [Wonderwall](https://github.com/nais/wonderwall). Se om du heler kan ta i bruk den ved integrasjon for Azure AD/ Idporten før du tar i bruk dette docker-imaget.
 
 - https://doc.nais.io/security/auth/azure-ad/sidecar/
 - https://doc.nais.io/security/auth/idporten/sidecar/
